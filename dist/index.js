@@ -8801,14 +8801,16 @@ class PullRequestRepository {
         this.update = (pullRequest) => __awaiter(this, void 0, void 0, function* () {
             return this.client.update({
                 body: pullRequest.body,
-                number: pullRequest.number,
+                // eslint-disable-next-line @typescript-eslint/camelcase
+                pull_number: pullRequest.number,
                 owner: pullRequest.owner,
                 repo: pullRequest.repo
             });
         });
         this.get = (number, owner, repo) => __awaiter(this, void 0, void 0, function* () {
             const data = (yield this.client.get({
-                number,
+                // eslint-disable-next-line @typescript-eslint/camelcase
+                pull_number: number,
                 owner,
                 repo
             })).data;
