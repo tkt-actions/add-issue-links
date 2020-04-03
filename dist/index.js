@@ -7827,7 +7827,7 @@ function getNextPage (octokit, link, headers) {
 Object.defineProperty(exports, "__esModule", { value: true });
 class PullRequest {
     constructor(title, body, number, owner, repo) {
-        this.addRelatedIssueNumberToBody = (issueNumber) => this.addIntoTopOfBody(`Issue\n- Resolve #${issueNumber}`);
+        this.addRelatedIssueNumberToBody = (issueNumber) => this.addIntoTopOfBody(`# Issue\n- Resolve #${issueNumber}`);
         this.addIntoTopOfBody = (str) => this.updateBody(`${str}\n${this.body}`);
         this.updateBody = (body) => {
             this.body = body;
