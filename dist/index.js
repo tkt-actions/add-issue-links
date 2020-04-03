@@ -481,6 +481,23 @@ function validate(octokit, options) {
 
 /***/ }),
 
+/***/ 74:
+/***/ (function(__unusedmodule, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class BaseError extends Error {
+    constructor(e) {
+        super(e);
+        this.name = new.target.name;
+    }
+}
+exports.BaseError = BaseError;
+
+
+/***/ }),
+
 /***/ 85:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -2291,6 +2308,7 @@ const core = __importStar(__webpack_require__(470));
 const github = __importStar(__webpack_require__(469));
 const utils_1 = __webpack_require__(611);
 const PullRequestRepository_1 = __webpack_require__(781);
+const BranchIssueNumNotFound_1 = __webpack_require__(590);
 function run() {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
@@ -2298,22 +2316,18 @@ function run() {
             // Get the issue number based on branch name
             const branchName = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.head.ref;
             const branchPrefix = core.getInput('branch-prefix', { required: true });
-            const pattern = new RegExp(`${branchPrefix}([0-9]+)`);
-            const issueNumber = utils_1.getIssueNumber(branchName, pattern);
-            // Skip process to add an issue reference to a pull request
-            if (issueNumber === 0) {
-                core.info('Skiped process to add an issue reference to a pull request.');
-                return;
-            }
+            const issueNumber = utils_1.getIssueNumber(branchName, branchPrefix);
             const token = core.getInput('repo-token', { required: true });
             const client = new github.GitHub(token);
             const { repo, issue } = github.context;
             const prRepository = new PullRequestRepository_1.PullRequestRepository(client);
-            const pr = yield prRepository.get(issueNumber, repo.owner, repo.repo);
+            const pr = yield prRepository.get(issue.number, repo.owner, repo.repo);
             const response = yield prRepository.update(pr.addRelatedIssueNumberToBody(issueNumber));
             core.info(`Added issue #${issueNumber} reference to pull request #${issue.number}.\n${response.data.html_url}`);
         }
         catch (error) {
+            if (error instanceof BranchIssueNumNotFound_1.BranchIssueNumNotFound)
+                return core.info(error.message);
             core.setFailed(error.message);
         }
     });
@@ -8016,6 +8030,23 @@ function getPageLinks (link) {
 
 /***/ }),
 
+/***/ 590:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseError_1 = __webpack_require__(74);
+class BranchIssueNumNotFound extends BaseError_1.BaseError {
+    constructor(e) {
+        super(e);
+    }
+}
+exports.BranchIssueNumNotFound = BranchIssueNumNotFound;
+
+
+/***/ }),
+
 /***/ 605:
 /***/ (function(module) {
 
@@ -8024,17 +8055,18 @@ module.exports = require("http");
 /***/ }),
 
 /***/ 611:
-/***/ (function(__unusedmodule, exports) {
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-function getIssueNumber(branchName, pattern) {
+const BranchIssueNumNotFound_1 = __webpack_require__(590);
+function getIssueNumber(branchName, branchPrefix) {
+    const pattern = new RegExp(`${branchPrefix}([0-9]+)`);
     const result = branchName.match(pattern);
-    if (result !== null) {
-        return parseInt(result[1]);
-    }
-    return 0;
+    if (!result)
+        throw new BranchIssueNumNotFound_1.BranchIssueNumNotFound('Skiped process to add an issue reference to a pull request.');
+    return parseInt(result[1]);
 }
 exports.getIssueNumber = getIssueNumber;
 
