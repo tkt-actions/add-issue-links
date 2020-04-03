@@ -20,7 +20,7 @@ jobs:
   issue-link:
     runs-on: ubuntu-latest
     steps:
-      - uses: tkt-actions/add-issue-links@v0.1.2
+      - uses: tkt-actions/add-issue-links@v1.0.0
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           branch-prefix: "issue-"
