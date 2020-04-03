@@ -31,7 +31,7 @@ describe('PullRequest', () => {
       'pr-action'
     )
     expect(pr.addRelatedIssueNumberToBody(12).body).toBe(
-      `Issue\n- Resolve #12\nsome description`
+      `# Issue\n- Resolve #12\nsome description`
     )
   })
 })
