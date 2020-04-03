@@ -14,6 +14,6 @@ assignees: ''
 - 
 
 ## Checks
-- [ ] Docs
-- [ ] Implements
+- [ ] Documents
+- [ ] Implementations
 - [ ] Tests

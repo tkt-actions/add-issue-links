@@ -8,13 +8,13 @@ assignees: ''
 ---
 
 ## Overview
-- deprecated error was found
+- 
 
 ## Bugs
 
 ### Error Messages
 
 ## Checks
-- [ ] Docs
-- [ ] Implements
+- [ ] Documents
+- [ ] Implementations
 - [ ] Tests
