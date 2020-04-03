@@ -1,6 +1,6 @@
 ---
 name: ''
-about: 'Create an any issue'
+about: 'Create an issue for fixing bugs'
 title: ''
 labels: ''
 assignees: ''
@@ -10,8 +10,9 @@ assignees: ''
 # Overview
 - 
 
-# Changes
-- 
+# Bugs
+
+## Error Messages
 
 # Checks
 - [ ] Documents
