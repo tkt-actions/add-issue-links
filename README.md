@@ -1,10 +1,16 @@
-# Add an issue reference
-A GitHub Action for adding a issue link to a pull request.
+# Add Issue Link
+A GitHub Action for [Linking a pull request to an issue](https://help.github.com/en/enterprise/2.17/user/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue).
 
 ## :arrow_forward: Usage
-A workflow adds texts contained a link for a related issue based on the branch name to a pull request description when a pull request is opened.
+this action add texts like this into the head of your Pull Request description when it is opened.
 
-![Adds texts contained a link for a related issue](usage.png)
+```
+# Issue
+- Resolve #2
+```
+
+- Result example
+![Linking a pull request to an issue](readmeImages/pull-request.png)
 
 ### Create a workflow
 
