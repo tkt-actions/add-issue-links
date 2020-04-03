@@ -1,0 +1,36 @@
+{
+  "name": "add-issue-links",
+  "version": "0.1.0",
+  "description": "A GitHub Action for adding an issue reference to a pull request.",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "build": "tsc",
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "lint": "eslint src/**/*.ts",
+    "pack": "ncc build",
+    "all": "npm run build && npm run format && npm run lint && npm run pack && npm test"
+  },
+  "author": "Kentaro Matsushita",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.2.3",
+    "@actions/github": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.2",
+    "@typescript-eslint/parser": "^2.24.0",
+    "@zeit/ncc": "^0.21.1",
+    "eslint": "^6.8.0",
+    "eslint-plugin-github": "^3.4.1",
+    "eslint-plugin-jest": "^23.8.2",
+    "jest": "^25.1.0",
+    "jest-circus": "^25.1.0",
+    "js-yaml": "^3.13.1",
+    "prettier": "^1.19.1",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
+  }
+}

@@ -1,0 +1,16 @@
+name: 'Add an issue link'
+description: 'A GitHub Action for adding a related issue link to a pull request.'
+author: 'tktcorporation'
+inputs:
+  branch-prefix:
+    description: 'The prefix of branch name.'
+    required: true
+  repo-token:
+    description: 'Token for the repository. Can be passed in using {{ secrets.GITHUB_TOKEN }}'
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'link'
+  color: 'gray-dark'
