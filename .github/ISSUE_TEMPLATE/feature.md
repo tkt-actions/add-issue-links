@@ -1,8 +1,8 @@
 ---
-name: ''
-about: 'Create an any issue'
+name: 'Implement new feature'
+about: 'Create an issue for implementations'
 title: ''
-labels: ''
+labels: 'enhancement'
 assignees: ''
 
 ---
