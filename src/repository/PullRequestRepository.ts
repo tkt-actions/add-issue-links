@@ -9,14 +9,16 @@ export class PullRequestRepository {
   update = async (pullRequest: PullRequest) =>
     this.client.update({
       body: pullRequest.body,
-      number: pullRequest.number,
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      pull_number: pullRequest.number,
       owner: pullRequest.owner,
       repo: pullRequest.repo
     })
   get = async (number: number, owner: string, repo: string) => {
     const data = (
       await this.client.get({
-        number,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        pull_number: number,
         owner,
         repo
       })
