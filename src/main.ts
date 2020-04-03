@@ -2,21 +2,15 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {getIssueNumber} from './utils'
 import {PullRequestRepository} from './repository/PullRequestRepository'
+import {BranchIssueNumNotFound} from './domain/error/BranchIssueNumNotFound'
 
 async function run(): Promise<void> {
   try {
     // Get the issue number based on branch name
     const branchName = github.context.payload.pull_request?.head.ref
     const branchPrefix = core.getInput('branch-prefix', {required: true})
-    const pattern = new RegExp(`${branchPrefix}([0-9]+)`)
 
-    const issueNumber = getIssueNumber(branchName, pattern)
-
-    // Skip process to add an issue reference to a pull request
-    if (issueNumber === 0) {
-      core.info('Skiped process to add an issue reference to a pull request.')
-      return
-    }
+    const issueNumber = getIssueNumber(branchName, branchPrefix)
 
     const token = core.getInput('repo-token', {required: true})
     const client = new github.GitHub(token)
@@ -24,7 +18,7 @@ async function run(): Promise<void> {
     const {repo, issue} = github.context
 
     const prRepository = new PullRequestRepository(client)
-    const pr = await prRepository.get(issueNumber, repo.owner, repo.repo)
+    const pr = await prRepository.get(issue.number, repo.owner, repo.repo)
     const response = await prRepository.update(
       pr.addRelatedIssueNumberToBody(issueNumber)
     )
@@ -33,6 +27,7 @@ async function run(): Promise<void> {
       `Added issue #${issueNumber} reference to pull request #${issue.number}.\n${response.data.html_url}`
     )
   } catch (error) {
+    if (error instanceof BranchIssueNumNotFound) return core.info(error.message)
     core.setFailed(error.message)
   }
 }

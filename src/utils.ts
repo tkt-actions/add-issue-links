@@ -1,9 +1,16 @@
-export function getIssueNumber(branchName: string, pattern: RegExp): number {
+import {BranchIssueNumNotFound} from './domain/error/BranchIssueNumNotFound'
+
+export function getIssueNumber(
+  branchName: string,
+  branchPrefix: string
+): number {
+  const pattern = new RegExp(`${branchPrefix}([0-9]+)`)
   const result = branchName.match(pattern)
 
-  if (result !== null) {
-    return parseInt(result[1])
-  }
+  if (!result)
+    throw new BranchIssueNumNotFound(
+      'Skiped process to add an issue reference to a pull request.'
+    )
 
-  return 0
+  return parseInt(result[1])
 }
