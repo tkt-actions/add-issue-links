@@ -1,21 +1,18 @@
 import {getIssueNumber} from '../src/utils'
+import {BranchIssueNumNotFound} from '../src/domain/error/BranchIssueNumNotFound'
 
 describe('getIssueNumber', () => {
   it('Gets the issue number based on branch name', () => {
     const branchName = 'issue-29'
-    const pattern = /issue-([0-9]+)/
-
-    const issueNumber = getIssueNumber(branchName, pattern)
-
+    const branchNamePrefix = 'issue-'
+    const issueNumber = getIssueNumber(branchName, branchNamePrefix)
     expect(issueNumber).toBe(29)
   })
 
-  it('Gets number 0 if the branch name is a pattern not match', () => {
+  it('the branch name have a not match pattern', () => {
     const branchName = 'patch1'
-    const pattern = /issue-([0-9]+)/
-
-    const issueNumber = getIssueNumber(branchName, pattern)
-
-    expect(issueNumber).toBe(0)
+    expect(() => getIssueNumber(branchName, branchName)).toThrow(
+      BranchIssueNumNotFound
+    )
   })
 })

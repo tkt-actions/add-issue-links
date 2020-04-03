@@ -1,6 +1,6 @@
 {
   "name": "add-issue-links",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "A GitHub Action for adding an issue reference to a pull request.",
   "main": "lib/main.js",
   "scripts": {
