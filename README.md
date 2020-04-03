@@ -17,7 +17,7 @@ on:
     types: [opened]
 
 jobs:
-  issue-reference:
+  issue-link:
     runs-on: ubuntu-latest
     steps:
       - uses: tkt-actions/add-issue-links@v0.1.0
