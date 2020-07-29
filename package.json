@@ -12,7 +12,7 @@
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "pack": "ncc build lib/main.js -m -o lib/main",
+    "pack": "ncc build -m",
     "all": "npm run format && npm run lint && npm test && npm run build && npm run pack"
   },
   "author": "tktcorporation",
