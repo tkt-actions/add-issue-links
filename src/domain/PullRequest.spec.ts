@@ -1,4 +1,4 @@
-import {PullRequest} from '../../src/domain/PullRequest'
+import { PullRequest } from './PullRequest';
 
 describe('PullRequest', () => {
   it('addIntoTopOfBody', () => {
@@ -7,10 +7,10 @@ describe('PullRequest', () => {
       'description',
       2,
       'tktcorporation',
-      'pr-action'
-    )
-    expect(pr.addIntoTopOfBody('top').body).toBe('top\ndescription')
-  })
+      'pr-action',
+    );
+    expect(pr.addIntoTopOfBody('top').body).toBe('top\ndescription');
+  });
 
   it('updateBody', () => {
     const pr = new PullRequest(
@@ -18,20 +18,20 @@ describe('PullRequest', () => {
       'some description',
       3,
       'tktcorporation',
-      'pr-action'
-    )
-    expect(pr.updateBody('updated').body).toBe('updated')
-  })
+      'pr-action',
+    );
+    expect(pr.updateBody('updated').body).toBe('updated');
+  });
   it('addRelatedIssueNumberToBody', () => {
     const pr = new PullRequest(
       'title',
       'some description',
       3,
       'tktcorporation',
-      'pr-action'
-    )
+      'pr-action',
+    );
     expect(pr.addRelatedIssueNumberToBody(12).body).toBe(
-      `# Issue\n- Resolve #12\nsome description`
-    )
-  })
-})
+      `# Issue\n- Resolve #12\nsome description`,
+    );
+  });
+});

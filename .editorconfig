@@ -5,6 +5,7 @@
 root = true
 
 [*]
+indent_size = 2
 indent_style = space
 trim_trailing_whitespace = true
 insert_final_newline = true
@@ -14,7 +15,7 @@ charset = utf-8
 [*.md]
 trim_trailing_whitespace = false
 
-[*.ts]
+[*.json]
 indent_size = 2
 
 [*.yml]
