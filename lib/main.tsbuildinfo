@@ -1,0 +1,35 @@
+{
+  "bundle": {
+    "commonSourceDirectory": "../src",
+    "sourceFiles": [
+      "../src/domain/error/BaseError.ts",
+      "../src/domain/error/BranchIssueNumNotFound.ts",
+      "../src/domain/PullRequest.ts",
+      "../src/application/repository/PullRequestRepository.ts",
+      "../src/infrastructure/datastore/PullRequestDataStore.ts",
+      "../src/application/service/PullRequestRecordService.ts",
+      "../src/domain/Branch.ts",
+      "../src/application/service/BranchQueryService.ts",
+      "../src/main.ts"
+    ],
+    "js": {
+      "sections": [
+        {
+          "pos": 0,
+          "end": 6751,
+          "kind": "text"
+        }
+      ]
+    },
+    "dts": {
+      "sections": [
+        {
+          "pos": 0,
+          "end": 2691,
+          "kind": "text"
+        }
+      ]
+    }
+  },
+  "version": "3.9.7"
+}
