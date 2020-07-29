@@ -10,7 +10,7 @@ inputs:
     required: true
 runs:
   using: "node12"
-  main: "lib/main.js"
+  main: "dist/index.js"
 branding:
   icon: "link"
   color: "gray-dark"

@@ -1,6 +1,6 @@
 {
   "name": "add-issue-links",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A GitHub Action for adding an issue reference to a pull request.",
   "main": "lib/main.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "pack": "ncc build lib/main.js -m -o lib/main",
+    "pack": "ncc build -m",
     "all": "npm run format && npm run lint && npm test && npm run build && npm run pack"
   },
   "author": "tktcorporation",
