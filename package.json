@@ -7,13 +7,13 @@
     "build": "tsc",
     "format": "prettier --write \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
     "format:check": "prettier --check \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
-    "lint": "eslint \"{src,apps,libs,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
+    "lint": "eslint \"{src,apps,libs,test}/**/{*.spec.ts,*.ts,*.tsx,*.js,*.jsx}\"",
     "lint:fix": "eslint \"{src,apps,libs,test}/**/{*.ts,*.tsx,*.js,*.jsx}\" --fix",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "pack": "ncc build lib/main.js -m -o lib/main",
-    "all": "npm run format && npm run lint && npm test && npm run build"
+    "all": "npm run format && npm run lint && npm test && npm run build && npm run pack"
   },
   "author": "tktcorporation",
   "license": "MIT",
