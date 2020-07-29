@@ -12,8 +12,8 @@
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "pack": "ncc build",
-    "all": "yarn build && yarn format && yarn lint && yarn pack && yarn test"
+    "pack": "ncc build lib/main.js -m -o lib/main",
+    "all": "npm run format && npm run lint && npm test && npm run build"
   },
   "author": "tktcorporation",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "@types/jest": "^25.1.4",
     "@types/node": "^13.9.2",
     "@typescript-eslint/parser": "^2.24.0",
-    "@zeit/ncc": "^0.21.1",
+    "@zeit/ncc": "^0.22.3",
     "eslint": "^6.8.0",
     "eslint-plugin-github": "^3.4.1",
     "eslint-plugin-jest": "^23.8.2",

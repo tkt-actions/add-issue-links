@@ -11,7 +11,7 @@
     "strictNullChecks": true,
     "target": "es2019",
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "./lib",
     "baseUrl": "./",
     "incremental": true
   }
