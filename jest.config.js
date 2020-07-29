@@ -1,11 +1,13 @@
 module.exports = {
-  clearMocks: true,
-  moduleFileExtensions: ['js', 'ts'],
-  testEnvironment: 'node',
-  testMatch: ['**/*.test.ts'],
-  testRunner: 'jest-circus/runner',
+  moduleFileExtensions: ["js", "json", "ts"],
+  rootDir: ".",
+  testRegex: ".spec.ts$",
   transform: {
-    '^.+\\.ts$': 'ts-jest'
+    "^.+\\.(t|j)s$": "ts-jest",
   },
-  verbose: true
-}
+  moduleNameMapper: {
+    "src(.*)$": "<rootDir>/src/$1",
+  },
+  coverageDirectory: "../coverage",
+  testEnvironment: "node",
+};
