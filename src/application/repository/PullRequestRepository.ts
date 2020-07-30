@@ -1,4 +1,4 @@
-import { PullRequest } from '../../domain/PullRequest';
+import { PullRequest } from '../../domain/pullRequest/PullRequest';
 import { Octokit } from '../../types/Octokit';
 
 export interface PullRequestRepository {

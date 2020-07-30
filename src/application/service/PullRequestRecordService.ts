@@ -1,11 +1,13 @@
 import { Context } from '@actions/github/lib/context';
 import { PullRequestRepository } from '../repository/PullRequestRepository';
+import { Position } from './../../domain/position/Position';
 
 export class PullRequestRecordService {
   constructor(private readonly pullRequestRepository: PullRequestRepository) {}
 
   addRelatedIssueNumberToBody = async (
     issueNumber: number,
+    position: Position,
     context: Context,
   ) => {
     const { repo, issue } = context;
@@ -14,8 +16,7 @@ export class PullRequestRecordService {
       repo.owner,
       repo.repo,
     );
-    return await this.pullRequestRepository.update(
-      pr.addRelatedIssueNumberToBody(issueNumber),
-    );
+    pr.body.addRelatedIssueSection(issueNumber, position);
+    return await this.pullRequestRepository.update(pr);
   };
 }

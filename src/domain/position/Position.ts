@@ -12,6 +12,10 @@ export class Position {
   static build = (value: string): Position | undefined =>
     isPositionValue(value) ? new Position(value) : undefined;
 
+  static top = (): Position => new Position(PositionValue.Top);
+
+  static bottom = (): Position => new Position(PositionValue.Bottom);
+
   constructor(private readonly value: PositionValue) {}
 
   getIsTop = (): boolean => this.value === PositionValue.Top;
