@@ -1,5 +1,5 @@
 import { PullRequest } from '../../domain/PullRequest';
-import { Octokit } from 'src/types/Octokit';
+import { Octokit } from '../../types/Octokit';
 
 export interface PullRequestRepository {
   update(

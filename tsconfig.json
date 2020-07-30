@@ -8,15 +8,16 @@
     "strictPropertyInitialization": true,
     "strict": true,
     "noImplicitAny": true,
+    "esModuleInterop": true,
     "strictNullChecks": true,
-    "target": "es6",
+    "target": "es2019",
     "sourceMap": true,
     "outDir": "./lib",
     "baseUrl": "./",
     "incremental": true
   },
   "include": [
-    "**/src/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",

@@ -1,6 +1,6 @@
 import { GitHub } from '@actions/github';
 import { PullRequest } from '../../domain/PullRequest';
-import { PullRequestRepository } from 'src/application/repository/PullRequestRepository';
+import { PullRequestRepository } from './../../application/repository/PullRequestRepository';
 
 export class PullRequestDataStore implements PullRequestRepository {
   private readonly client: GitHub['pulls'];
