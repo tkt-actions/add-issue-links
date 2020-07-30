@@ -4,8 +4,9 @@ A GitHub Action for [Linking a pull request to an issue](https://help.github.com
 ## :arrow_forward: Usage
 this action add texts like this into the head of your Pull Request description when it is opened.
 
-```
-# Issue
+```md
+# Related Issue
+
 - Resolve #2
 ```
 
