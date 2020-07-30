@@ -4,8 +4,9 @@ A GitHub Action for [Linking a pull request to an issue](https://help.github.com
 ## :arrow_forward: Usage
 this action add texts like this into the head of your Pull Request description when it is opened.
 
-```
-# Issue
+```md
+# Related Issue
+
 - Resolve #2
 ```
 
@@ -28,20 +29,25 @@ jobs:
     steps:
       - uses: tkt-actions/add-issue-links@v1.0.0
         with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          branch-prefix: "issue-"
+          repo-token: "${{ secrets.GITHUB_TOKEN }}" # required
+          branch-prefix: "issue-"                   # required
+          position: "top"                           # optional (default: bottom)
 ```
 
 ### Set up required parameters
 Need to contain the required parameters on the workflow file.
 
-- `repo-token` A token for the repository. Can be passed in using `{{ secrets.GITHUB_TOKEN }}`
-- `branch-prefix` A prefix of the branch name for finding a related issue (e.g `issue-`).
+- `repo-token` - A token of the repository. It can be passed with `{{ secrets.GITHUB_TOKEN }}`
+- `branch-prefix` - A prefix of the branch name for finding a related issue (e.g. `issue-`).
+
+### Set up optional parameters
+
+- `position` - An option for changing position of linking text section. ("top" or "bottom" allowed)
 
 ### Add a comment contained a link for a related issue
 Create a branch based on the pattern of the branch name (`[branch prefix][issue number][you can put any texts]`) set up on `.github/workflows/issue-reference.yml`.
 
-For example, if `branch-prefix` is `issue-`, create a branch like `issue-8_create-action`.
+For example, if `branch-prefix` is `issue-`, create a branch like `issue-8/create-action`.
 
 When pushing your changes to the repository and creating a pull request, a workflow runs automatically.
 
