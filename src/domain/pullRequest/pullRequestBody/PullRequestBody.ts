@@ -1,4 +1,4 @@
-import { Position } from 'src/domain/position/Position';
+import { Position } from './../../../domain/position/Position';
 
 export class PullRequestBody {
   private static issueLinkText = (issueNumber: number) =>
