@@ -18,10 +18,18 @@ export class PullRequest {
     this.owner = owner;
     this.repo = repo;
   }
+
   addRelatedIssueNumberToBody = (issueNumber: number) =>
     this.addIntoTopOfBody(`# Issue\n- Resolve #${issueNumber}`);
-  addIntoTopOfBody = (str: string) => this.updateBody(`${str}\n${this.body}`);
-  updateBody = (body: string) => {
+
+  addIntoTopOfBody = (str: string) => this.setBody(`${str}\n${this.body}`);
+
+  addIntoBottomOfBody = (str: string) => this.setBody(`${this.body}\n${str}`);
+
+  private static issueLinkText = (issueNumber: number) =>
+    `# Related Issue\n\n- Resolve #${issueNumber}`;
+
+  private setBody = (body: string) => {
     this.body = body;
     return this;
   };
