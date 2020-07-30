@@ -1,4 +1,4 @@
-import { Branch } from 'src/domain/Branch';
+import { Branch } from './../../domain/Branch';
 import { Context } from '@actions/github/lib/context';
 
 export class BranchQueryService {
