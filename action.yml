@@ -3,11 +3,14 @@ description: "A GitHub Action to add a related issue link to a pull request."
 author: "tktcorporation"
 inputs:
   branch-prefix:
-    description: "The prefix of branch name."
+    description: "A token of the repository. It can be passed with `{{ secrets.GITHUB_TOKEN }}`"
     required: true
   repo-token:
-    description: "Token for the repository. it can pass with {{ secrets.GITHUB_TOKEN }}"
+    description: "A prefix of the branch name for finding a related issue (e.g. `issue-`)."
     required: true
+  position:
+    description: 'For changing position of linking text section. ("top" or "bottom")'
+    required: false
 runs:
   using: "node12"
   main: "dist/index.js"
