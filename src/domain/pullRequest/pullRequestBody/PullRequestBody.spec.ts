@@ -1,50 +1,48 @@
 import { PullRequestBody } from './PullRequestBody';
 import { Position } from '../../position/Position';
 import { Resolve } from '../../resolve/Resolve';
-import { container } from 'tsyringe';
+import { IssueLinkSection } from './issueLinkSection/IssueLinkSection';
+import { IssueLink } from './issueLinkSection/issueLink/IssueLinkText';
 
 interface IPullRequestBody {
   value: string;
   addIntoTop(str: string): void;
   addIntoBottom(str: string): void;
   addRelatedIssueSection(
-    issueNumber: number,
+    issueLinkSection: IssueLinkSection,
     position: Position,
-    resolve: Resolve,
-  );
+  ): void;
 }
 
 describe('PullRequestBody', () => {
-  let pullRequestBody: IPullRequestBody;
-  beforeAll(() => {
-    // pullRequestBody = PullRequestBody("description");
-  });
   it('addIntoTopOfBody', () => {
+    const pullRequestBody = new PullRequestBody('description');
     pullRequestBody.addIntoTop('top');
     expect(pullRequestBody.value).toBe('top\n\ndescription');
   });
 
   it('addIntoBottomOfBody', () => {
+    const pullRequestBody = new PullRequestBody('description');
     pullRequestBody.addIntoBottom('bottom');
     expect(pullRequestBody.value).toBe('description\n\nbottom');
   });
 
   describe('addRelatedIssueNumberToBody', () => {
     it('into top', () => {
+      const pullRequestBody = new PullRequestBody('description');
       pullRequestBody.addRelatedIssueSection(
-        12,
+        new IssueLinkSection([new IssueLink(12, Resolve.true())]),
         Position.top(),
-        Resolve.true(),
       );
       expect(pullRequestBody.value).toBe(
         `# Related Issue\n\n- Resolve #12\n\ndescription`,
       );
     });
     it('into bottom', () => {
+      const pullRequestBody = new PullRequestBody('description');
       pullRequestBody.addRelatedIssueSection(
-        12,
+        new IssueLinkSection([new IssueLink(12, Resolve.false())]),
         Position.bottom(),
-        Resolve.false(),
       );
       expect(pullRequestBody.value).toBe(
         `description\n\n# Related Issue\n\n- #12`,
