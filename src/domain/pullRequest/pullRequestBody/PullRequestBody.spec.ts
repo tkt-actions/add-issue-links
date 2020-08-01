@@ -1,15 +1,52 @@
 import { PullRequestBody } from './PullRequestBody';
+import { Position } from '../../position/Position';
+import { Resolve } from '../../resolve/Resolve';
+import { IssueLinkSection } from './issueLinkSection/IssueLinkSection';
+import { IssueLink } from './issueLinkSection/issueLink/IssueLinkText';
+
+interface IPullRequestBody {
+  value: string;
+  addIntoTop(str: string): void;
+  addIntoBottom(str: string): void;
+  addRelatedIssueSection(
+    issueLinkSection: IssueLinkSection,
+    position: Position,
+  ): void;
+}
 
 describe('PullRequestBody', () => {
   it('addIntoTopOfBody', () => {
-    const prb = new PullRequestBody('description');
-    prb.addIntoTop('top');
-    expect(prb.value).toBe('top\n\ndescription');
+    const pullRequestBody = new PullRequestBody('description');
+    pullRequestBody.addIntoTop('top');
+    expect(pullRequestBody.value).toBe('top\n\ndescription');
   });
 
   it('addIntoBottomOfBody', () => {
-    const prb = new PullRequestBody('description');
-    prb.addIntoBottom('bottom');
-    expect(prb.value).toBe('description\n\nbottom');
+    const pullRequestBody = new PullRequestBody('description');
+    pullRequestBody.addIntoBottom('bottom');
+    expect(pullRequestBody.value).toBe('description\n\nbottom');
+  });
+
+  describe('addRelatedIssueNumberToBody', () => {
+    it('into top', () => {
+      const pullRequestBody = new PullRequestBody('description');
+      pullRequestBody.addRelatedIssueSection(
+        new IssueLinkSection([new IssueLink(12, Resolve.true())]),
+        Position.top(),
+      );
+      expect(pullRequestBody.value).toBe(
+        `# Related Issue\n\n- Resolve #12\n\ndescription`,
+      );
+    });
+    it('into bottom', () => {
+      const pullRequestBody = new PullRequestBody('description');
+      pullRequestBody.addRelatedIssueSection(
+        new IssueLinkSection([new IssueLink(12, Resolve.false())]),
+        Position.bottom(),
+      );
+      expect(pullRequestBody.value).toBe(
+        `description\n\n# Related Issue\n\n- #12`,
+      );
+    });
   });
 });

@@ -1,4 +1,4 @@
-name: 'Issue Link'
+name: 'Issue Link Top'
 on:
   pull_request:
     types: [opened]
@@ -8,9 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Add issue links
+      - name: Add issue links to Top
         uses: ./
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           branch-prefix: 'issue-'
-          resolve: 'true'
+          position: 'top'
+          resolve: 'false'

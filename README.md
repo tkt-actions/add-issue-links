@@ -31,7 +31,8 @@ jobs:
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}" # required
           branch-prefix: "issue-"                   # required
-          position: "top"                           # optional (default: bottom)
+          position: "top"                           # optional (default: "bottom")
+          resolve: "true"                           # optional (default: "false")
 ```
 
 ### Set up required parameters
@@ -42,9 +43,10 @@ Need to contain the required parameters on the workflow file.
 
 ### Set up optional parameters
 
-- `position` - An option for changing position of linking text section. ("top" or "bottom" allowed)
+- `position` - Changing position of link text section. ("top" or "bottom" allowed)
+- `resolve` - Adding \"resolve\" prefix to close a related issue when the branch is merged. ("true" or "false" allowed)
 
-### Add a comment contained a link for a related issue
+### Add a section contained a link of related issue to a pull request
 Create a branch based on the pattern of the branch name (`[branch prefix][issue number][you can put any texts]`) set up on `.github/workflows/issue-reference.yml`.
 
 For example, if `branch-prefix` is `issue-`, create a branch like `issue-8/create-action`.

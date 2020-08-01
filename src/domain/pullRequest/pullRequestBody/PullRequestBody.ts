@@ -1,9 +1,7 @@
 import { Position } from './../../../domain/position/Position';
+import { IssueLinkSection } from './issueLinkSection/IssueLinkSection';
 
 export class PullRequestBody {
-  private static issueLinkText = (issueNumber: number) =>
-    `# Related Issue\n\n- Resolve #${issueNumber}`;
-
   constructor(private _value: string) {}
 
   add = (text: string, position: Position) =>
@@ -13,8 +11,10 @@ export class PullRequestBody {
 
   addIntoBottom = (str: string) => this.setValue(`${this._value}\n\n${str}`);
 
-  addRelatedIssueSection = (issueNumber: number, posision: Position) =>
-    this.add(PullRequestBody.issueLinkText(issueNumber), posision);
+  addRelatedIssueSection = (
+    issueLinkSection: IssueLinkSection,
+    posision: Position,
+  ) => this.add(issueLinkSection.createText(), posision);
 
   private setValue = (value: string) => (this._value = value);
 
