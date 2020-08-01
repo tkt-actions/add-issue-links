@@ -12,6 +12,7 @@ async function run(): Promise<void> {
       token: core.getInput('repo-token', { required: true }),
       branchPrefix: core.getInput('branch-prefix', { required: true }),
       position: core.getInput('position', { required: false }),
+      resolve: core.getInput('resolve', { required: false }),
     };
 
     const issueNumber = new BranchQueryService(github.context)
