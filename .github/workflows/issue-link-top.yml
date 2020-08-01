@@ -1,4 +1,4 @@
-name: "Issue Link Top"
+name: 'Issue Link Top'
 on:
   pull_request:
     types: [opened]
@@ -11,6 +11,7 @@ jobs:
       - name: Add issue links to Top
         uses: ./
         with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          branch-prefix: "issue-"
-          position: "top"
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          branch-prefix: 'issue-'
+          position: 'top'
+          resolve: 'false'
