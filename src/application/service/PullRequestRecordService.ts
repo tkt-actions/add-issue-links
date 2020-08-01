@@ -1,9 +1,9 @@
 import { Context } from '@actions/github/lib/context';
 import { PullRequestRepository } from '../repository/PullRequestRepository';
 import { Position } from './../../domain/position/Position';
-import { Resolve } from 'src/domain/resolve/Resolve';
-import { IssueLinkSection } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/IssueLinkSection';
-import { IssueLink } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/issueLink/IssueLinkText';
+import { Resolve } from './../../domain/resolve/Resolve';
+import { IssueLinkSection } from './../../domain/pullRequest/pullRequestBody/issueLinkSection/IssueLinkSection';
+import { IssueLink } from './../../domain/pullRequest/pullRequestBody/issueLinkSection/issueLink/IssueLinkText';
 
 export class PullRequestRecordService {
   constructor(private readonly pullRequestRepository: PullRequestRepository) {}

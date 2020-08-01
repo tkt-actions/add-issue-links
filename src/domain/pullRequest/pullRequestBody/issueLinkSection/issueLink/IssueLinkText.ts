@@ -1,4 +1,4 @@
-import { Resolve } from 'src/domain/resolve/Resolve';
+import { Resolve } from './../../../../../domain/resolve/Resolve';
 import { TextMapping } from '../text/Text';
 
 export class IssueLink {
