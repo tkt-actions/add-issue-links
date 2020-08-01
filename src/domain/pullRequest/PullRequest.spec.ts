@@ -1,6 +1,9 @@
 import { PullRequest } from './PullRequest';
 import { PullRequestBody } from './pullRequestBody/PullRequestBody';
 import { Position } from '../position/Position';
+import { IssueLink } from './pullRequestBody/issueLinkSection/issueLink/IssueLinkText';
+import { Resolve } from '../resolve/Resolve';
+import { IssueLinkSection } from './pullRequestBody/issueLinkSection/IssueLinkSection';
 
 describe('PullRequest', () => {
   it('into bottom', () => {
@@ -11,7 +14,10 @@ describe('PullRequest', () => {
       'tktcorporation',
       'pr-action',
     );
-    pr.body.addRelatedIssueSection(12, Position.bottom());
+    pr.body.addRelatedIssueSection(
+      new IssueLinkSection([new IssueLink(12, Resolve.true())]),
+      Position.bottom(),
+    );
     expect(pr.body.value).toBe(
       `some description\n\n# Related Issue\n\n- Resolve #12`,
     );
