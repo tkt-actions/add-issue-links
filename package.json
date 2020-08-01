@@ -19,7 +19,9 @@
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.3",
-    "@actions/github": "^2.1.1"
+    "@actions/github": "^2.1.1",
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.3.0"
   },
   "devDependencies": {
     "@types/jest": "^25.1.4",
