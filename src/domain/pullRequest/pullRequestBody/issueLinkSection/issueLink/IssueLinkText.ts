@@ -1,5 +1,6 @@
 import { Resolve } from './../../../../../domain/resolve/Resolve';
 import { TextMapping } from '../text/Text';
+import { Repository } from 'src/domain/repository/Repository';
 
 export class IssueLink {
   private static readonly resolveStr = 'Resolve';
@@ -7,13 +8,19 @@ export class IssueLink {
   constructor(
     private readonly issueNumber: number,
     private readonly resolve: Resolve,
+    private readonly repository?: Repository,
   ) {}
 
+  private createRepositoryText = () =>
+    this.repository ? this.repository.createText() : TextMapping.blank;
   private createIssueLink = (): string => '#' + this.issueNumber;
   private createResolvePrefix = (): string =>
     this.resolve.isTrue
       ? IssueLink.resolveStr + TextMapping.whitespace
       : TextMapping.blank;
 
-  createText = () => this.createResolvePrefix() + this.createIssueLink();
+  createText = () =>
+    this.createResolvePrefix() +
+    this.createRepositoryText() +
+    this.createIssueLink();
 }
