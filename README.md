@@ -35,6 +35,7 @@ jobs:
           branch-prefix: 'issue-' # required
           position: 'top' # optional (default: "bottom")
           resolve: 'true' # optional (default: "false")
+          repository: 'tkt-actions/add-issue-links' # optional
 ```
 
 ### Set up required parameters
@@ -48,6 +49,7 @@ Need to contain the required parameters on the workflow file.
 
 - `position` - Changing position of link text section. ("top" or "bottom" allowed)
 - `resolve` - Adding \"resolve\" prefix to close a related issue when the branch is merged. ("true" or "false" allowed)
+- `repository` - Changing a base repository related to an issue. (e.g. `tkt-actions/issue-links`)
 
 ### Add a section contained a link of related issue to a pull request
 
