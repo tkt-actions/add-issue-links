@@ -4,6 +4,7 @@ import { Position } from './../../domain/position/Position';
 import { Resolve } from './../../domain/resolve/Resolve';
 import { IssueLinkSection } from './../../domain/pullRequest/pullRequestBody/issueLinkSection/IssueLinkSection';
 import { IssueLink } from './../../domain/pullRequest/pullRequestBody/issueLinkSection/issueLink/IssueLinkText';
+import { Repository } from 'src/domain/repository/Repository';
 
 export class PullRequestRecordService {
   constructor(private readonly pullRequestRepository: PullRequestRepository) {}
@@ -12,6 +13,7 @@ export class PullRequestRecordService {
     issueNumber: number,
     position: Position,
     resolve: Resolve,
+    repository: Repository | undefined,
     context: Context,
   ) => {
     const { repo, issue } = context;
@@ -21,7 +23,7 @@ export class PullRequestRecordService {
       repo.repo,
     );
     pr.body.addRelatedIssueSection(
-      new IssueLinkSection([new IssueLink(issueNumber, resolve)]),
+      new IssueLinkSection([new IssueLink(issueNumber, resolve, repository)]),
       position,
     );
     return await this.pullRequestRepository.update(pr);
