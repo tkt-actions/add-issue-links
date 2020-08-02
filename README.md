@@ -1,10 +1,10 @@
-# Add Issue Link
+# Add Issue Links
 
 A GitHub Action for [Linking a pull request to an issue](https://help.github.com/en/enterprise/2.17/user/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue).
 
 ## :arrow_forward: Usage
 
-this action add texts like this into the head of your Pull Request description when it is opened.
+This action add texts into a body of Pull Request like this when it is opened.
 
 ```md
 # Related Issue
@@ -17,7 +17,7 @@ this action add texts like this into the head of your Pull Request description w
 
 ### Create a workflow
 
-Add `.github/workflows/issue-reference.yml` with the following:
+Add `.github/workflows/issue-link.yml` with the following:
 
 ```yml
 name: 'Issue Link'
@@ -35,6 +35,7 @@ jobs:
           branch-prefix: 'issue-' # required
           position: 'top' # optional (default: "bottom")
           resolve: 'true' # optional (default: "false")
+          repository: 'tkt-actions/add-issue-links' # optional
 ```
 
 ### Set up required parameters
@@ -48,6 +49,7 @@ Need to contain the required parameters on the workflow file.
 
 - `position` - Changing position of link text section. ("top" or "bottom" allowed)
 - `resolve` - Adding \"resolve\" prefix to close a related issue when the branch is merged. ("true" or "false" allowed)
+- `repository` - Changing a base repository related to an issue. (e.g. `tkt-actions/issue-links`)
 
 ### Add a section contained a link of related issue to a pull request
 
