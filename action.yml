@@ -6,7 +6,7 @@ inputs:
     description: 'A token of the repository. It can be passed with `{{ secrets.GITHUB_TOKEN }}`'
     required: true
   branch-prefix:
-    description: 'A prefix of the branch name for finding a related issue (e.g. `issue-`). Default: `issue-`'
+    description: 'A prefix of the branch name for finding a related issue. Default: `issue-`'
     required: false
     dafault: 'issue-'
   position:
