@@ -1,6 +1,7 @@
 import { PullRequestBody } from './PullRequestBody';
 import { Position } from '../../position/Position';
 import { Resolve } from '../../resolve/Resolve';
+import { Repository } from '../../../domain/repository/Repository';
 import { IssueLinkSection } from './issueLinkSection/IssueLinkSection';
 import { IssueLink } from './issueLinkSection/issueLink/IssueLinkText';
 
@@ -48,5 +49,17 @@ describe('PullRequestBody', () => {
         `description\n\n# Related Issue\n\n- #12`,
       );
     });
+  });
+  describe('Repository option', () => {
+    const pullRequestBody = new PullRequestBody('description');
+    pullRequestBody.addRelatedIssueSection(
+      new IssueLinkSection([
+        new IssueLink(12, Resolve.false(), new Repository('owner', 'sample')),
+      ]),
+      Position.bottom(),
+    );
+    expect(pullRequestBody.value).toBe(
+      `description\n\n# Related Issue\n\n- owner/sample#12`,
+    );
   });
 });
