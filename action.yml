@@ -17,7 +17,8 @@ inputs:
     description: '`true` to add "Resolve" prefix to an issue link. "Resolve" prefix close an related issue when the branch is merged. Default: `true`'
     required: false
     default: 'true'
-  repository: 'Repository name for using an other repository (e.g. "tkt-actions/issue-links")'
+  repository:
+    description: 'Repository name for using an other repository (e.g. "tkt-actions/issue-links")'
     required: false
 runs:
   using: 'node12'
