@@ -1,22 +1,27 @@
-name: "issue link"
-description: "A GitHub Action to add a related issue link to a pull request."
-author: "tktcorporation"
+name: 'Add an issue link'
+description: 'Use to add an issue link related to your pull requests.'
+author: 'tktcorporation'
 inputs:
-  branch-prefix:
-    description: "(Required) A token of the repository. It can be passed with `{{ secrets.GITHUB_TOKEN }}`"
-    required: true
   repo-token:
-    description: "(Required) A prefix of the branch name for finding a related issue (e.g. `issue-`)."
+    description: 'A prefix of the branch name for finding a related issue (e.g. `issue-`).'
     required: true
-  position:
-    description: "(Optional) For changing position of linking text section. (\"top\" or \"bottom\")"
+  branch-prefix:
+    description: 'A token of the repository. It can be passed with `{{ secrets.GITHUB_TOKEN }}`'
     required: false
+    dafault: 'issue-'
+  position:
+    description: '`top` or `bottom`. A position name for inserting issue link section.'
+    required: false
+    default: 'bottom'
   resolve:
-    description: "(Optional) Adding \"resolve\" prefix to close a related issue when the branch is merged. (\"true\" or \"false\")"
+    description: '`true` to add "Resolve" prefix to an issue link. "Resolve" prefix close an related issue when the branch is merged.'
+    required: false
+    default: 'true'
+  repository: 'Repository name for using an other repository (e.g. "tkt-actions/issue-links")'
     required: false
 runs:
-  using: "node12"
-  main: "dist/index.js"
+  using: 'node12'
+  main: 'dist/index.js'
 branding:
-  icon: "link"
-  color: "gray-dark"
+  icon: 'link'
+  color: 'gray-dark'
