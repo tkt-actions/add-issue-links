@@ -6,6 +6,7 @@ import { PullRequestRecordService } from './application/service/PullRequestRecor
 import { BranchQueryService } from './application/service/BranchQueryService';
 import { Position } from './domain/position/Position';
 import { Resolve } from './domain/resolve/Resolve';
+import { Repository } from './domain/repository/Repository';
 
 async function run(): Promise<void> {
   try {
@@ -14,6 +15,7 @@ async function run(): Promise<void> {
       branchPrefix: core.getInput('branch-prefix', { required: true }),
       position: core.getInput('position', { required: false }),
       resolve: core.getInput('resolve', { required: false }),
+      repository: core.getInput('repository', { required: false }),
     };
 
     const issueNumber = new BranchQueryService(github.context)
@@ -26,6 +28,7 @@ async function run(): Promise<void> {
       issueNumber,
       Position.build(withInput.position) ?? Position.bottom(),
       Resolve.buildFromString(withInput.resolve) ?? Resolve.false(),
+      Repository.build(withInput.repository),
       github.context,
     );
 
