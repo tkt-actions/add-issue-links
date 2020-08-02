@@ -18,6 +18,8 @@ async function run(): Promise<void> {
       repository: core.getInput('repository', { required: false }),
     };
 
+    core.debug('reponame: ' + withInput.repository);
+
     const issueNumber = new BranchQueryService(github.context)
       .getBranch()
       .getIssueNumber(withInput.branchPrefix);
@@ -33,7 +35,7 @@ async function run(): Promise<void> {
     );
 
     core.info(
-      `Added issue #${issueNumber} reference to pull request #${prUpdateResult.data.number}.\n${prUpdateResult.data.html_url}`,
+      `Added issue #${issueNumber} reference to pull request ${withInput.repository}#${prUpdateResult.data.number}.\n${prUpdateResult.data.html_url}`,
     );
   } catch (error) {
     if (error instanceof BranchIssueNumNotFound)
