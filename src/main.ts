@@ -18,8 +18,6 @@ async function run(): Promise<void> {
       repository: core.getInput('repository', { required: false }),
     };
 
-    core.debug('reponame: ' + withInput.repository);
-
     const issueNumber = new BranchQueryService(github.context)
       .getBranch()
       .getIssueNumber(withInput.branchPrefix);
