@@ -54,7 +54,7 @@ describe('PullRequestBody', () => {
     const pullRequestBody = new PullRequestBody('description');
     pullRequestBody.addRelatedIssueSection(
       new IssueLinkSection([
-        new IssueLink(12, Resolve.false(), new Repository('owner', 'sample')),
+        new IssueLink(12, Resolve.false(), Repository.build('owner/sample')),
       ]),
       Position.bottom(),
     );
