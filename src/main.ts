@@ -22,6 +22,8 @@ async function run(): Promise<void> {
       linkStyle: core.getInput('repository', { required: false }),
     };
 
+    core.debug(Object.values(withInput).toString());
+
     const issueNumber = new BranchQueryService(github.context)
       .getBranch()
       .getIssueNumber(withInput.branchPrefix);
