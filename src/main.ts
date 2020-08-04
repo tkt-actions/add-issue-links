@@ -7,6 +7,9 @@ import { BranchQueryService } from './application/service/BranchQueryService';
 import { Position } from './domain/position/Position';
 import { Resolve } from './domain/resolve/Resolve';
 import { Repository } from './domain/repository/Repository';
+import { PullRequestRecordCoordinator } from './application/coordinator/PullRequestRecordCoordinator';
+import { PullRequestQueryService } from './application/service/PullRequestQueryService';
+import { LinkStyle } from './domain/linkStyle/LinkStyle';
 
 async function run(): Promise<void> {
   try {
@@ -16,24 +19,31 @@ async function run(): Promise<void> {
       position: core.getInput('position', { required: false }),
       resolve: core.getInput('resolve', { required: false }),
       repository: core.getInput('repository', { required: false }),
+      linkStyle: core.getInput('repository', { required: false }),
     };
 
     const issueNumber = new BranchQueryService(github.context)
       .getBranch()
       .getIssueNumber(withInput.branchPrefix);
 
-    const prUpdateResult = await new PullRequestRecordService(
-      new PullRequestDataStore(new github.GitHub(withInput.token)),
-    ).addRelatedIssueNumberToBody(
+    new PullRequestRecordCoordinator(
+      new PullRequestRecordService(
+        new PullRequestDataStore(new github.GitHub(withInput.token)),
+      ),
+      new PullRequestQueryService(
+        new PullRequestDataStore(new github.GitHub(withInput.token)),
+      ),
+    ).addIssueLink(
+      github.context,
       issueNumber,
       Position.build(withInput.position) ?? Position.bottom(),
       Resolve.buildFromString(withInput.resolve) ?? Resolve.false(),
       Repository.build(withInput.repository),
-      github.context,
+      LinkStyle.build(withInput.linkStyle) ?? LinkStyle.body(),
     );
 
     core.info(
-      `Added issue #${issueNumber} reference to pull request ${withInput.repository}#${prUpdateResult.data.number}.\n${prUpdateResult.data.html_url}`,
+      `Added issue #${issueNumber} reference to pull request ${withInput.repository}#${issueNumber}.`,
     );
   } catch (error) {
     if (error instanceof BranchIssueNumNotFound)
