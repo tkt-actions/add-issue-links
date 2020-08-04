@@ -1,6 +1,6 @@
 {
   "name": "add-issue-links",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A GitHub Action for adding an issue reference to a pull request.",
   "main": "lib/main.js",
   "scripts": {
@@ -13,10 +13,17 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "pack": "ncc build -m",
-    "all": "npm run format && npm run lint && npm test && npm run build && npm run pack"
+    "all": "npm run format && npm run lint && npm test && npm run build && npm run pack",
+    "pre-commit": "all"
   },
   "author": "tktcorporation",
   "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm run all"
+    }
+  },
   "dependencies": {
     "@actions/core": "^1.2.3",
     "@actions/github": "^2.1.1",
@@ -31,6 +38,7 @@
     "eslint": "^6.8.0",
     "eslint-plugin-github": "^3.4.1",
     "eslint-plugin-jest": "^23.8.2",
+    "husky": "^4.2.5",
     "jest": "^25.1.0",
     "prettier": "^1.19.1",
     "ts-jest": "^25.2.1",

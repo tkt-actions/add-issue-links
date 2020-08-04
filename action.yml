@@ -3,23 +3,27 @@ description: 'Use to add an issue link related to your pull requests.'
 author: 'tktcorporation'
 inputs:
   repo-token:
-    description: 'A token of the repository. It can be passed with `{{ secrets.GITHUB_TOKEN }}`'
+    description: 'A token of the repository. It can be passed with `{{ secrets.GITHUB_TOKEN }}`.'
     required: true
   branch-prefix:
     description: 'A prefix of the branch name for finding a related issue. Default: `issue-`'
     required: false
     dafault: 'issue-'
   position:
-    description: '`top` or `bottom`. A position name for inserting issue link section. Default: `bottom`'
+    description: '`top` or `bottom`. A position name of inserting issue link section. Default: `bottom`'
     required: false
     default: 'bottom'
   resolve:
-    description: '`true` to add "Resolve" prefix to an issue link. "Resolve" prefix close an related issue when the branch is merged. Default: `true`'
+    description: '`true` or `false`. `true` to add "Resolve" prefix to an issue link. "Resolve" prefix close an related issue when the branch is merged. Default: `true`'
     required: false
-    default: 'true'
+    default: 'false'
   repository:
-    description: 'Repository name for using an other repository (e.g. "tkt-actions/issue-links")'
+    description: 'Repository name for using an other repository. (e.g. "tkt-actions/issue-links")'
     required: false
+  link-style:
+    description: '`body` or `comment`. `body` add an issue link by editing Pull Request body. `comment` add an issue link by creating comment to Pull Request. Default: `body`'
+    required: false
+    default: 'body'
 runs:
   using: 'node12'
   main: 'dist/index.js'
