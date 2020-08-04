@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Add issue links with repository option
+      - name: Add issue links with link-style option
         uses: ./
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
