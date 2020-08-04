@@ -1,4 +1,4 @@
-name: 'Issue Link Repository'
+name: 'Issue Link Comment'
 on:
   pull_request:
     types: [opened]
@@ -13,7 +13,7 @@ jobs:
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           branch-prefix: 'issue-'
-          position: 'top' # nothing affect
+          position: 'top' # nothing affects
           resolve: 'true'
           repository: 'tktcorporation/tktcorporation'
           link-style: 'comment'
