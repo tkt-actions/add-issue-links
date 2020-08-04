@@ -4,7 +4,7 @@ A GitHub Action for [Linking a pull request to an issue](https://help.github.com
 
 ## :arrow_forward: Usage
 
-This action add texts into a body of Pull Request like this when it is opened.
+This action add a comment or add texts into a body of Pull Request like this when it is opened.
 
 ```md
 # Related Issue
@@ -17,7 +17,11 @@ This action add texts into a body of Pull Request like this when it is opened.
 
 ### Create a workflow
 
-Add `.github/workflows/issue-link.yml` with the following:
+Create `.github/workflows/issue-link.yml`.
+
+#### issue-link.yml
+
+example
 
 ```yml
 name: 'Issue Link'
@@ -36,20 +40,30 @@ jobs:
           position: 'top' # optional (default: "bottom")
           resolve: 'true' # optional (default: "false")
           repository: 'tkt-actions/add-issue-links' # optional
+          link-style: 'comment' # optional (default: "body")
 ```
 
 ### Set up required parameters
 
 Need to contain the required parameters on the workflow file.
 
-- `repo-token` - A token of the repository. It can be passed with `{{ secrets.GITHUB_TOKEN }}`
+- `repo-token` - A token of the repository.  
+It can pass with `{{ secrets.GITHUB_TOKEN }}`
 
 ### Set up optional parameters
 
-- `branch-prefix` - A prefix of the branch name for finding a related issue. Default: `issue-`
-- `position` - Changing position of link text section. ("top" or "bottom" allowed)
-- `resolve` - Adding \"resolve\" prefix to close a related issue when the branch is merged. ("true" or "false" allowed)
-- `repository` - Changing a base repository related to an issue. if you use this option, "resolve" option must be false. (e.g. `tkt-actions/issue-links`)
+- `branch-prefix` - A prefix of a branch name for finding a related issue.  
+(Default: "issue-")
+- `position` - Changing position of link text section.  
+(allow "top" or "bottom". Default: "bottom")
+- `resolve` - Adding "resolve" prefix to close a related issue when the branch is merged.  
+(allow "true" or "false". Default: "false")
+- `repository` - Changing a base repository related to an issue.  
+If you use this option, "resolve" option become false.  
+(e.g. `tkt-actions/issue-links`)
+- `link-style` - `body` add an issue link by editing Pull Request body.  
+`comment` add an issue link by creating comment to Pull Request.  
+(allow "body or "comment". Default: "body")
 
 ### Add a section contained a link of related issue to a pull request
 
