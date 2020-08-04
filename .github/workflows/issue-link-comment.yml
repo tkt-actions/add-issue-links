@@ -1,4 +1,4 @@
-name: 'Issue Link Top'
+name: 'Issue Link Comment'
 on:
   pull_request:
     types: [opened]
@@ -8,11 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Add issue links to Top
+      - name: Add issue links with link-style option
         uses: ./
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           branch-prefix: 'issue-'
-          position: 'top'
-          resolve: 'false'
-          link-style: 'body'
+          position: 'top' # nothing affects
+          resolve: 'true'
+          repository: 'tktcorporation/tktcorporation'
+          link-style: 'comment'

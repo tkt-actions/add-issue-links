@@ -1,6 +1,6 @@
 import { Resolve } from './../../../../../domain/resolve/Resolve';
 import { TextMapping } from '../text/Text';
-import { Repository } from 'src/domain/repository/Repository';
+import { Repository } from './../../../../../domain/repository/Repository';
 
 export class IssueLink {
   private static readonly resolveStr = 'Resolve';
