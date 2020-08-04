@@ -19,7 +19,7 @@ async function run(): Promise<void> {
       position: core.getInput('position', { required: false }),
       resolve: core.getInput('resolve', { required: false }),
       repository: core.getInput('repository', { required: false }),
-      linkStyle: core.getInput('repository', { required: false }),
+      linkStyle: core.getInput('link-style', { required: false }),
     };
 
     core.debug(Object.values(withInput).toString());
