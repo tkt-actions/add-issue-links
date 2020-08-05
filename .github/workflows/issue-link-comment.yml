@@ -14,6 +14,6 @@ jobs:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           branch-prefix: 'issue-'
           position: 'top' # nothing affects
-          resolve: 'true'
+          resolve: 'false'
           repository: 'tktcorporation/tktcorporation'
           link-style: 'comment'
