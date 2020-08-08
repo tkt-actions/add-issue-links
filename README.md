@@ -59,7 +59,34 @@ Need to contain the required parameters on the workflow file.
   `comment` add an issue link by creating comment to Pull Request.  
   (allow "body or "comment". Default: "body")
 
-#### example
+#### Body edit example
+
+- Add an issue link to Pull Request body.
+- Use branch prefix `/`. A branch name example `feature/10/update`.
+- Set an issue repository.
+
+```yml
+name: 'Issue Links'
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  issue-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tkt-actions/add-issue-links@v1.4.0
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          branch-prefix: '/'
+          repository: 'tkt-actions/add-issue-links'
+```
+
+#### Comment link example
+
+- Add an issue link as a comment
+- Resolve issue when a pull request is merged.
+- Use branch prefix `issue-`. A branch name example `feature/issue-10/update`.
 
 ```yml
 name: 'Issue Links'
@@ -75,9 +102,7 @@ jobs:
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}' # required
           branch-prefix: 'issue-' # required
-          position: 'top' # optional (default: "bottom")
           resolve: 'true' # optional (default: "false")
-          repository: 'tkt-actions/add-issue-links' # optional
           link-style: 'comment' # optional (default: "body")
 ```
 
