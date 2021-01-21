@@ -3,7 +3,7 @@ import { BranchIssueNumNotFound } from './error/BranchIssueNumNotFound';
 export class Branch {
   constructor(private readonly branchName: string) {}
 
-  getIssueNumber(branchPrefix: string): number {
+  getIssueNumber(branchPrefix?: string): number {
     const pattern = new RegExp(`${branchPrefix}([0-9]+)`);
     const result = this.branchName.match(pattern);
 
