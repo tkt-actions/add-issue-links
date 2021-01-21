@@ -106,6 +106,10 @@ jobs:
           link-style: 'comment' # optional (default: "body")
 ```
 
+#### Other examples
+
+- https://github.com/tkt-actions/add-issue-links/tree/master/.github/workflows
+
 ### Add a section contained a link of related issue to a pull request
 
 Create a branch based on the pattern of the branch name (`[branch prefix][issue number][you can put any texts]`) set up on `.github/workflows/issue-reference.yml`.
