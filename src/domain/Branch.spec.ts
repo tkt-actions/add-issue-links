@@ -11,7 +11,7 @@ describe('Branch', () => {
       expect(issueNumber).toBe(29);
     });
 
-    it('the branch name have a not match pattern', () => {
+    it('the branch name has no match pattern', () => {
       const branchName = 'patch-1';
       const branch = new Branch(branchName);
       const branchNamePrefix = 'issue-';
