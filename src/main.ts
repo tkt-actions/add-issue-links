@@ -15,7 +15,7 @@ async function run(): Promise<void> {
   try {
     const withInput = {
       token: core.getInput('repo-token', { required: true }),
-      branchPrefix: core.getInput('branch-prefix', { required: true }),
+      branchPrefix: core.getInput('branch-prefix', { required: false }),
       position: core.getInput('position', { required: false }),
       resolve: core.getInput('resolve', { required: false }),
       repository: core.getInput('repository', { required: false }),
