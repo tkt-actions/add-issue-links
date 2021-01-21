@@ -19,5 +19,13 @@ describe('Branch', () => {
         BranchIssueNumNotFound,
       );
     });
+
+    it('the branch name has no prefix', () => {
+      const branchName = '12/feature/action';
+      const branch = new Branch(branchName);
+      const branchNamePrefix = '';
+      const issueNumber = branch.getIssueNumber(branchNamePrefix);
+      expect(issueNumber).toBe(12);
+    });
   });
 });
