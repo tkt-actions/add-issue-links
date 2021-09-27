@@ -5,15 +5,15 @@ import { Repository } from '../../../domain/repository/Repository';
 import { IssueLinkSection } from './issueLinkSection/IssueLinkSection';
 import { IssueLink } from './issueLinkSection/issueLink/IssueLinkText';
 
-interface IPullRequestBody {
-  value: string;
-  addIntoTop(str: string): void;
-  addIntoBottom(str: string): void;
-  addRelatedIssueSection(
-    issueLinkSection: IssueLinkSection,
-    position: Position,
-  ): void;
-}
+// interface IPullRequestBody {
+//   value: string;
+//   addIntoTop(str: string): void;
+//   addIntoBottom(str: string): void;
+//   addRelatedIssueSection(
+//     issueLinkSection: IssueLinkSection,
+//     position: Position,
+//   ): void;
+// }
 
 describe('PullRequestBody', () => {
   it('addIntoTopOfBody', () => {
