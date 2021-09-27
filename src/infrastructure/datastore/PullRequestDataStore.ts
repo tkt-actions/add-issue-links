@@ -1,17 +1,21 @@
-import { GitHub } from '@actions/github';
+import { GitHub } from '@actions/github/lib/utils';
 import { PullRequest } from '../../domain/pullRequest/PullRequest';
 import { PullRequestRepository } from './../../application/repository/PullRequestRepository';
 import { PullRequestBody } from './../../domain/pullRequest/pullRequestBody/PullRequestBody';
 import { IssueLinkSection } from './../../domain/pullRequest/pullRequestBody/issueLinkSection/IssueLinkSection';
 
 export class PullRequestDataStore implements PullRequestRepository {
-  private readonly client: GitHub['pulls'];
-  private readonly issuesClient: GitHub['issues'];
-  constructor(client: GitHub) {
-    this.client = client.pulls;
-    this.issuesClient = client.issues;
+  private readonly client: InstanceType<typeof GitHub>['rest']['pulls'];
+  private readonly issuesClient: InstanceType<typeof GitHub>['rest']['issues'];
+  constructor(client: InstanceType<typeof GitHub>) {
+    this.client = client.rest.pulls;
+    this.issuesClient = client.rest.issues;
   }
-  update = async (pullRequest: PullRequest) =>
+  update = async (
+    pullRequest: PullRequest,
+  ): Promise<
+    ReturnType<InstanceType<typeof GitHub>['rest']['pulls']['update']>
+  > =>
     this.client.update({
       body: pullRequest.body.value,
       pull_number: pullRequest.number,

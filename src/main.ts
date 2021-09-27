@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import * as github from '@actions/github';
+import { getOctokit, context } from '@actions/github';
 import { BranchIssueNumNotFound } from './domain/error/BranchIssueNumNotFound';
 import { PullRequestDataStore } from './infrastructure/datastore/PullRequestDataStore';
 import { PullRequestRecordService } from './application/service/PullRequestRecordService';
@@ -24,19 +24,19 @@ async function run(): Promise<void> {
 
     core.debug(Object.values(withInput).toString());
 
-    const issueNumber = new BranchQueryService(github.context)
+    const issueNumber = new BranchQueryService(context)
       .getBranch()
       .getIssueNumber(withInput.branchPrefix);
 
     new PullRequestRecordCoordinator(
       new PullRequestRecordService(
-        new PullRequestDataStore(new github.GitHub(withInput.token)),
+        new PullRequestDataStore(getOctokit(withInput.token)),
       ),
       new PullRequestQueryService(
-        new PullRequestDataStore(new github.GitHub(withInput.token)),
+        new PullRequestDataStore(getOctokit(withInput.token)),
       ),
     ).addIssueLink(
-      github.context,
+      context,
       issueNumber,
       Position.build(withInput.position) ?? Position.bottom(),
       Resolve.buildFromString(withInput.resolve) ?? Resolve.false(),
