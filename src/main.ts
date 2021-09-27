@@ -48,9 +48,9 @@ async function run(): Promise<void> {
       `Added issue #${issueNumber} reference to pull request ${withInput.repository}#${issueNumber}.`,
     );
   } catch (error) {
-    if (error instanceof BranchIssueNumNotFound)
-      return core.info(error.message);
-    core.setFailed(error.message);
+    if (error instanceof BranchIssueNumNotFound) return core.setFailed(error);
+    if (error instanceof Error) return core.setFailed(error);
+    return core.setFailed('uncaught error occurred');
   }
 }
 
