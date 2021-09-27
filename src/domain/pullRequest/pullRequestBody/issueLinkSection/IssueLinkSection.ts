@@ -12,7 +12,7 @@ export class IssueLinkSection {
   constructor(private issueLinks: IssueLink[]) {}
 
   private createIssueLinkListText = () =>
-    this.issueLinks.map(link => TextMapping.listPrefix + link.createText());
+    this.issueLinks.map((link) => TextMapping.listPrefix + link.createText());
 
   createText = (): string =>
     IssueLinkSection.headingText +
