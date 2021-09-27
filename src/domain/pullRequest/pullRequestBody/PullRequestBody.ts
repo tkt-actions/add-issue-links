@@ -2,14 +2,16 @@ import { Position } from './../../../domain/position/Position';
 import { IssueLinkSection } from './issueLinkSection/IssueLinkSection';
 
 export class PullRequestBody {
-  constructor(private _value: string) {}
+  constructor(private _value: string | null) {}
 
   add = (text: string, position: Position) =>
     position.getIsTop() ? this.addIntoTop(text) : this.addIntoBottom(text);
 
-  addIntoTop = (str: string) => this.setValue(`${str}\n\n${this._value}`);
+  addIntoTop = (str: string) =>
+    this.setValue(`${str}` + (this._value ? `\n\n${this._value}` : ''));
 
-  addIntoBottom = (str: string) => this.setValue(`${this._value}\n\n${str}`);
+  addIntoBottom = (str: string) =>
+    this.setValue((this._value ? `${this._value}\n\n` : '') + `${str}`);
 
   addRelatedIssueSection = (
     issueLinkSection: IssueLinkSection,
@@ -19,6 +21,6 @@ export class PullRequestBody {
   private setValue = (value: string) => (this._value = value);
 
   get value(): string {
-    return this._value;
+    return this._value || '';
   }
 }
