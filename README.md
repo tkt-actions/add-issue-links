@@ -48,6 +48,8 @@ Need to contain the required parameters on the workflow file.
 
 - `branch-prefix` - A prefix of a branch name for finding a related issue.  
   (Default: "issue-")
+- `branch-suffix` - A suffix of a branch name for finding a related issue.  
+  (Default: "")
 - `position` - Changing position of link text section.  
   (allow "top" or "bottom". Default: "bottom")
 - `resolve` - Adding "resolve" prefix to close a related issue when the branch is merged.  

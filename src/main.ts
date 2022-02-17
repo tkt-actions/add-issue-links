@@ -16,6 +16,7 @@ async function run(): Promise<void> {
     const withInput = {
       token: core.getInput('repo-token', { required: true }),
       branchPrefix: core.getInput('branch-prefix', { required: false }),
+      branchSuffix: core.getInput('branch-suffix', { required: false }),
       position: core.getInput('position', { required: false }),
       resolve: core.getInput('resolve', { required: false }),
       repository: core.getInput('repository', { required: false }),
@@ -26,7 +27,7 @@ async function run(): Promise<void> {
 
     const issueNumber = new BranchQueryService(context)
       .getBranch()
-      .getIssueNumber(withInput.branchPrefix);
+      .getIssueNumber(withInput.branchPrefix, withInput.branchSuffix);
 
     new PullRequestRecordCoordinator(
       new PullRequestRecordService(

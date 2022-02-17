@@ -9,6 +9,10 @@ inputs:
     description: 'A prefix of the branch name for finding a related issue. Default: `issue-`'
     required: false
     dafault: 'issue-'
+  branch-suffix:
+    description: 'A suffix of the branch name for finding a related issue. Default: ``'
+    required: false
+    dafault: ''
   position:
     description: '`top` or `bottom`. A position name of inserting issue link section. Default: `bottom`'
     required: false
