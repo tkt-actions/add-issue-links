@@ -5,6 +5,7 @@ import { IssueLink } from './pullRequestBody/issueLinkSection/issueLink/IssueLin
 import { Resolve } from '../resolve/Resolve';
 import { IssueLinkSection } from './pullRequestBody/issueLinkSection/IssueLinkSection';
 import { Repository } from '../repository/Repository';
+import { ResolveWord } from './pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
 
 describe('PullRequest', () => {
   describe('bottom', () => {
@@ -18,7 +19,12 @@ describe('PullRequest', () => {
       );
       pr.body.addRelatedIssueSection(
         new IssueLinkSection([
-          new IssueLink(12, Resolve.true(), Repository.build('owner/sample')),
+          new IssueLink(
+            12,
+            Resolve.true(),
+            new ResolveWord(),
+            Repository.build('owner/sample'),
+          ),
         ]),
         Position.bottom(),
       );
@@ -36,13 +42,16 @@ describe('PullRequest', () => {
       );
       pr.body.addRelatedIssueSection(
         new IssueLinkSection([
-          new IssueLink(12, Resolve.true(), Repository.build('owner/sample')),
+          new IssueLink(
+            12,
+            Resolve.true(),
+            new ResolveWord('fixed'),
+            Repository.build('owner/sample'),
+          ),
         ]),
         Position.bottom(),
       );
-      expect(pr.body.value).toBe(
-        `# Related Issue\n\n- Resolve owner/sample#12`,
-      );
+      expect(pr.body.value).toBe(`# Related Issue\n\n- fixed owner/sample#12`);
     });
     it('into bottom of null', () => {
       const pr = new PullRequest(
@@ -54,13 +63,16 @@ describe('PullRequest', () => {
       );
       pr.body.addRelatedIssueSection(
         new IssueLinkSection([
-          new IssueLink(12, Resolve.true(), Repository.build('owner/sample')),
+          new IssueLink(
+            12,
+            Resolve.true(),
+            new ResolveWord(''),
+            Repository.build('owner/sample'),
+          ),
         ]),
         Position.bottom(),
       );
-      expect(pr.body.value).toBe(
-        `# Related Issue\n\n- Resolve owner/sample#12`,
-      );
+      expect(pr.body.value).toBe(`# Related Issue\n\n-  owner/sample#12`);
     });
   });
   describe('top', () => {
@@ -74,7 +86,12 @@ describe('PullRequest', () => {
       );
       pr.body.addRelatedIssueSection(
         new IssueLinkSection([
-          new IssueLink(12, Resolve.true(), Repository.build('owner/sample')),
+          new IssueLink(
+            12,
+            Resolve.true(),
+            new ResolveWord(undefined),
+            Repository.build('owner/sample'),
+          ),
         ]),
         Position.top(),
       );
@@ -92,12 +109,17 @@ describe('PullRequest', () => {
       );
       pr.body.addRelatedIssueSection(
         new IssueLinkSection([
-          new IssueLink(12, Resolve.true(), Repository.build('owner/sample')),
+          new IssueLink(
+            12,
+            Resolve.true(),
+            new ResolveWord('release:'),
+            Repository.build('owner/sample'),
+          ),
         ]),
         Position.top(),
       );
       expect(pr.body.value).toBe(
-        `# Related Issue\n\n- Resolve owner/sample#12`,
+        `# Related Issue\n\n- release: owner/sample#12`,
       );
     });
     it('into top of null', () => {
@@ -110,7 +132,12 @@ describe('PullRequest', () => {
       );
       pr.body.addRelatedIssueSection(
         new IssueLinkSection([
-          new IssueLink(12, Resolve.true(), Repository.build('owner/sample')),
+          new IssueLink(
+            12,
+            Resolve.true(),
+            new ResolveWord(),
+            Repository.build('owner/sample'),
+          ),
         ]),
         Position.top(),
       );
