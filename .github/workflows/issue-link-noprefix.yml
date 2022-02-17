@@ -1,4 +1,4 @@
-name: "Issue Link Comment"
+name: "Issue Link Comment (with resolve-word)"
 on:
   pull_request:
     types: [opened]
@@ -8,11 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Add issue links with link-style option
+      - name: issue link comment
         uses: ./
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           branch-prefix: ""
-          resolve: "false"
-          repository: "tktcorporation/tktcorporation"
+          resolve: "true"
+          resolve-word: "release:"
           link-style: "comment"
