@@ -1,0 +1,10 @@
+addReviewers: false
+
+addAssignees: true
+numberOfAssignees: 1
+
+assignees:
+  - tktcorporation
+
+skipKeywords:
+  - wip
