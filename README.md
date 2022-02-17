@@ -31,7 +31,7 @@ jobs:
   issue-links:
     runs-on: ubuntu-latest
     steps:
-      - uses: tkt-actions/add-issue-links@v1.6.0
+      - uses: tkt-actions/add-issue-links@v1.7.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}' # required
           branch-prefix: 'issue-' # required
@@ -78,7 +78,7 @@ jobs:
   issue-links:
     runs-on: ubuntu-latest
     steps:
-      - uses: tkt-actions/add-issue-links@v1.6.0
+      - uses: tkt-actions/add-issue-links@v1.7.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           branch-prefix: '/'
@@ -101,7 +101,7 @@ jobs:
   issue-links:
     runs-on: ubuntu-latest
     steps:
-      - uses: tkt-actions/add-issue-links@v1.6.0
+      - uses: tkt-actions/add-issue-links@v1.7.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}' # required
           branch-prefix: 'issue-' # required
