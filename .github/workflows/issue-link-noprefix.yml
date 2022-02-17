@@ -1,4 +1,4 @@
-name: "Issue Link Comment"
+name: "Issue Link Comment (with resolve-word)"
 on:
   pull_request:
     types: [opened]
@@ -14,5 +14,6 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           branch-prefix: ""
           resolve: "false"
+          resolve-word: "release:"
           repository: "tktcorporation/tktcorporation"
           link-style: "comment"
