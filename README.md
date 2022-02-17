@@ -48,11 +48,14 @@ Need to contain the required parameters on the workflow file.
 
 - `branch-prefix` - A prefix of a branch name for finding a related issue.  
   (Default: "issue-")
-- `position` - Changing position of link text section.  
+- `position` - Change position of link text section.  
   (allow "top" or "bottom". Default: "bottom")
-- `resolve` - Adding "resolve" prefix to close a related issue when the branch is merged.  
+- `resolve` - Add "Resolve" prefix to close a related issue when the branch is merged.  
   (allow "true" or "false". Default: "false")
-- `repository` - Changing a base repository related to an issue.  
+- `resolve-word` - Set a prefix for resolving an issue to some specified.
+  This works when the `resolve` option is enabled.
+  (Default: "Resolve")
+- `repository` - Change a base repository related to an issue.  
   If you use this option, "resolve" option become false.  
   (e.g. `tkt-actions/issue-links`)
 - `link-style` - `body` add an issue link by editing Pull Request body.  

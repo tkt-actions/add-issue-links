@@ -1,13 +1,13 @@
 import { Resolve } from './../../../../../domain/resolve/Resolve';
 import { TextMapping } from '../text/Text';
 import { Repository } from './../../../../../domain/repository/Repository';
+import { ResolveWord } from '../resolveWord/ResolveWord';
 
 export class IssueLink {
-  private static readonly resolveStr = 'Resolve';
-
   constructor(
     private readonly issueNumber: number,
     private readonly resolve: Resolve,
+    private readonly resolveWord: ResolveWord,
     private readonly repository?: Repository,
   ) {}
 
@@ -16,7 +16,7 @@ export class IssueLink {
   private createIssueLink = (): string => '#' + this.issueNumber;
   private createResolvePrefix = (): string =>
     this.resolve.isTrue
-      ? IssueLink.resolveStr + TextMapping.whitespace
+      ? this.resolveWord.value + TextMapping.whitespace
       : TextMapping.blank;
 
   createText = () =>

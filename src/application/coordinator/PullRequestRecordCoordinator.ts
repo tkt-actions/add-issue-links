@@ -6,6 +6,7 @@ import { Resolve } from './../../domain/resolve/Resolve';
 import { Repository } from './../../domain/repository/Repository';
 import { LinkStyle } from './../../domain/linkStyle/LinkStyle';
 import { Position } from 'src/domain/position/Position';
+import { ResolveWord } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
 
 export class PullRequestRecordCoordinator {
   constructor(
@@ -19,6 +20,7 @@ export class PullRequestRecordCoordinator {
     issueNumber: number,
     position: Position,
     resolve: Resolve,
+    resolveWord: ResolveWord,
     repository: Repository | undefined,
     linkStyle: LinkStyle,
   ): Promise<void> => {
@@ -28,6 +30,7 @@ export class PullRequestRecordCoordinator {
       issueNumber,
       position,
       resolve,
+      resolveWord,
       repository,
       linkStyle,
     );
@@ -38,6 +41,7 @@ export class PullRequestRecordCoordinator {
     issueNumber: number,
     position: Position,
     resolve: Resolve,
+    resolveWord: ResolveWord,
     repository: Repository | undefined,
     linkStyle: LinkStyle,
   ): Promise<void> => {
@@ -47,6 +51,7 @@ export class PullRequestRecordCoordinator {
         issueNumber,
         position,
         resolve,
+        resolveWord,
         repository,
       );
     if (linkStyle.getIsComment())
@@ -54,6 +59,7 @@ export class PullRequestRecordCoordinator {
         pullRequest,
         issueNumber,
         resolve,
+        resolveWord,
         repository,
       );
   };

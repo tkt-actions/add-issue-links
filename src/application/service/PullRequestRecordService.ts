@@ -5,6 +5,7 @@ import { IssueLinkSection } from './../../domain/pullRequest/pullRequestBody/iss
 import { IssueLink } from './../../domain/pullRequest/pullRequestBody/issueLinkSection/issueLink/IssueLinkText';
 import { Repository } from './../../domain/repository/Repository';
 import { PullRequest } from './../../domain/pullRequest/PullRequest';
+import { ResolveWord } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
 
 export class PullRequestRecordService {
   constructor(private readonly pullRequestRepository: PullRequestRepository) {}
@@ -13,11 +14,14 @@ export class PullRequestRecordService {
     pullRequest: PullRequest,
     issueNumber: number,
     resolve: Resolve,
+    resolveWord: ResolveWord,
     repository: Repository | undefined,
   ) =>
     this.pullRequestRepository.createComment(
       pullRequest,
-      new IssueLinkSection([new IssueLink(issueNumber, resolve, repository)]),
+      new IssueLinkSection([
+        new IssueLink(issueNumber, resolve, resolveWord, repository),
+      ]),
     );
 
   addRelatedIssueNumberToBody = async (
@@ -25,10 +29,13 @@ export class PullRequestRecordService {
     issueNumber: number,
     position: Position,
     resolve: Resolve,
+    resolveWord: ResolveWord,
     repository: Repository | undefined,
   ) => {
     pullRequest.body.addRelatedIssueSection(
-      new IssueLinkSection([new IssueLink(issueNumber, resolve, repository)]),
+      new IssueLinkSection([
+        new IssueLink(issueNumber, resolve, resolveWord, repository),
+      ]),
       position,
     );
     return await this.pullRequestRepository.update(pullRequest);

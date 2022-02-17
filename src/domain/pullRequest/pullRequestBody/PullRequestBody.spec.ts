@@ -4,6 +4,7 @@ import { Resolve } from '../../resolve/Resolve';
 import { Repository } from '../../../domain/repository/Repository';
 import { IssueLinkSection } from './issueLinkSection/IssueLinkSection';
 import { IssueLink } from './issueLinkSection/issueLink/IssueLinkText';
+import { ResolveWord } from './issueLinkSection/resolveWord/ResolveWord';
 
 // interface IPullRequestBody {
 //   value: string;
@@ -32,7 +33,9 @@ describe('PullRequestBody', () => {
     it('into top', () => {
       const pullRequestBody = new PullRequestBody('description');
       pullRequestBody.addRelatedIssueSection(
-        new IssueLinkSection([new IssueLink(12, Resolve.true())]),
+        new IssueLinkSection([
+          new IssueLink(12, Resolve.true(), new ResolveWord()),
+        ]),
         Position.top(),
       );
       expect(pullRequestBody.value).toBe(
@@ -42,7 +45,9 @@ describe('PullRequestBody', () => {
     it('into bottom', () => {
       const pullRequestBody = new PullRequestBody('description');
       pullRequestBody.addRelatedIssueSection(
-        new IssueLinkSection([new IssueLink(12, Resolve.false())]),
+        new IssueLinkSection([
+          new IssueLink(12, Resolve.false(), new ResolveWord()),
+        ]),
         Position.bottom(),
       );
       expect(pullRequestBody.value).toBe(
@@ -54,7 +59,12 @@ describe('PullRequestBody', () => {
     const pullRequestBody = new PullRequestBody('description');
     pullRequestBody.addRelatedIssueSection(
       new IssueLinkSection([
-        new IssueLink(12, Resolve.false(), Repository.build('owner/sample')),
+        new IssueLink(
+          12,
+          Resolve.false(),
+          new ResolveWord(),
+          Repository.build('owner/sample'),
+        ),
       ]),
       Position.bottom(),
     );
