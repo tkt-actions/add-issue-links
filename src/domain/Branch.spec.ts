@@ -27,5 +27,13 @@ describe('Branch', () => {
       const issueNumber = branch.getIssueNumber(branchNamePrefix);
       expect(issueNumber).toBe(12);
     });
+
+    it('the branch name has no prefix and dot suffix', () => {
+      const branchName = '12.suffix';
+      const branch = new Branch(branchName);
+      const branchNamePrefix = '';
+      const issueNumber = branch.getIssueNumber(branchNamePrefix);
+      expect(issueNumber).toBe(12);
+    });
   });
 });

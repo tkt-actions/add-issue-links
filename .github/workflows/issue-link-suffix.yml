@@ -1,0 +1,17 @@
+name: 'Issue Link Comment (with dot suffix)'
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  issue-link:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Add issue links with link-style option
+        uses: ./
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          branch-prefix: ''
+          resolve: 'true'
+          link-style: 'comment'
