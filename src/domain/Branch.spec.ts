@@ -24,7 +24,7 @@ describe('Branch', () => {
         branch.getIssueNumber(branchNamePrefix, branchNameSuffix),
       ).toThrow(BranchIssueNumNotFound);
     });
-    it('the branch name has no prefix', () => {
+    it('the branch name has no prefix and suffix', () => {
       const branchName = '12/feature/action';
       const branch = new Branch(branchName);
       const branchNamePrefix = '';
@@ -34,6 +34,28 @@ describe('Branch', () => {
         branchNameSuffix,
       );
       expect(issueNumber).toBe(12);
+    });
+    it('the branch name has suffix', () => {
+      const branchName = '93.issue';
+      const branch = new Branch(branchName);
+      const branchNamePrefix = '';
+      const branchNameSuffix = '.';
+      const issueNumber = branch.getIssueNumber(
+        branchNamePrefix,
+        branchNameSuffix,
+      );
+      expect(issueNumber).toBe(93);
+    });
+    it('the branch name has both prefix and suffix', () => {
+      const branchName = 'feature/#123_issue/action';
+      const branch = new Branch(branchName);
+      const branchNamePrefix = '#';
+      const branchNameSuffix = '_';
+      const issueNumber = branch.getIssueNumber(
+        branchNamePrefix,
+        branchNameSuffix,
+      );
+      expect(issueNumber).toBe(123);
     });
   });
 });
