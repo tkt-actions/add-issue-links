@@ -1,3 +1,3 @@
-FROM node:14.5.0
+FROM node:16.15.0-bullseye-slim
 
 RUN npm i -g typescript ts-node
