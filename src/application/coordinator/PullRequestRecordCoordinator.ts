@@ -7,6 +7,7 @@ import { Repository } from './../../domain/repository/Repository';
 import { LinkStyle } from './../../domain/linkStyle/LinkStyle';
 import { Position } from 'src/domain/position/Position';
 import { ResolveWord } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
+import { Header } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/header/Header';
 
 export class PullRequestRecordCoordinator {
   constructor(
@@ -19,6 +20,7 @@ export class PullRequestRecordCoordinator {
     context: Context,
     issueNumber: number,
     position: Position,
+    header: Header,
     resolve: Resolve,
     resolveWord: ResolveWord,
     repository: Repository | undefined,
@@ -29,6 +31,7 @@ export class PullRequestRecordCoordinator {
       pullRequest,
       issueNumber,
       position,
+      header,
       resolve,
       resolveWord,
       repository,
@@ -40,6 +43,7 @@ export class PullRequestRecordCoordinator {
     pullRequest: PullRequest,
     issueNumber: number,
     position: Position,
+    header: Header,
     resolve: Resolve,
     resolveWord: ResolveWord,
     repository: Repository | undefined,
@@ -50,6 +54,7 @@ export class PullRequestRecordCoordinator {
         pullRequest,
         issueNumber,
         position,
+        header,
         resolve,
         resolveWord,
         repository,
@@ -57,6 +62,7 @@ export class PullRequestRecordCoordinator {
     if (linkStyle.getIsComment())
       await this.recordService.addRelatedIssueNumberAsComment(
         pullRequest,
+        header,
         issueNumber,
         resolve,
         resolveWord,

@@ -1,21 +1,16 @@
 import { TextMapping } from './text/Text';
 import { IssueLink } from './issueLink/IssueLinkText';
+import { Header } from './header/Header';
 
 export class IssueLinkSection {
-  private static readonly headingStr = 'Related Issue';
-
-  private static readonly headingText =
-    TextMapping.headingPrefix +
-    IssueLinkSection.headingStr +
-    TextMapping.lineBreak;
-
-  constructor(private issueLinks: IssueLink[]) {}
+  constructor(private issueLinks: IssueLink[], private header: Header) {}
 
   private createIssueLinkListText = () =>
     this.issueLinks.map((link) => TextMapping.listPrefix + link.createText());
 
   createText = (): string =>
-    IssueLinkSection.headingText +
+    this.header.value +
+    TextMapping.lineBreak +
     TextMapping.lineBreak +
     this.createIssueLinkListText();
 }

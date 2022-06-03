@@ -50,6 +50,8 @@ Need to contain the required parameters on the workflow file.
   (Default: "issue-")
 - `position` - Change position of link text section.  
   (allow "top" or "bottom". Default: "bottom")
+- `header` - Change header of link text section.  
+  (Default: "# Related Issue")
 - `resolve` - Add "Resolve" prefix to close a related issue when the branch is merged.  
   (allow "true" or "false". Default: "false")
 - `resolve-word` - Set a prefix for resolving an issue to some specified.
