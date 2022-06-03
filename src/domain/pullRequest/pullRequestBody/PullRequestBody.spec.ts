@@ -5,6 +5,7 @@ import { Repository } from '../../../domain/repository/Repository';
 import { IssueLinkSection } from './issueLinkSection/IssueLinkSection';
 import { IssueLink } from './issueLinkSection/issueLink/IssueLinkText';
 import { ResolveWord } from './issueLinkSection/resolveWord/ResolveWord';
+import { Header } from './issueLinkSection/header/Header';
 
 // interface IPullRequestBody {
 //   value: string;
@@ -33,9 +34,10 @@ describe('PullRequestBody', () => {
     it('into top', () => {
       const pullRequestBody = new PullRequestBody('description');
       pullRequestBody.addRelatedIssueSection(
-        new IssueLinkSection([
-          new IssueLink(12, Resolve.true(), new ResolveWord()),
-        ]),
+        new IssueLinkSection(
+          [new IssueLink(12, Resolve.true(), new ResolveWord())],
+          new Header('# Related Issue'),
+        ),
         Position.top(),
       );
       expect(pullRequestBody.value).toBe(
@@ -45,9 +47,10 @@ describe('PullRequestBody', () => {
     it('into bottom', () => {
       const pullRequestBody = new PullRequestBody('description');
       pullRequestBody.addRelatedIssueSection(
-        new IssueLinkSection([
-          new IssueLink(12, Resolve.false(), new ResolveWord()),
-        ]),
+        new IssueLinkSection(
+          [new IssueLink(12, Resolve.false(), new ResolveWord())],
+          new Header('# Related Issue'),
+        ),
         Position.bottom(),
       );
       expect(pullRequestBody.value).toBe(
@@ -58,18 +61,41 @@ describe('PullRequestBody', () => {
   describe('Repository option', () => {
     const pullRequestBody = new PullRequestBody('description');
     pullRequestBody.addRelatedIssueSection(
-      new IssueLinkSection([
-        new IssueLink(
-          12,
-          Resolve.false(),
-          new ResolveWord(),
-          Repository.build('owner/sample'),
-        ),
-      ]),
+      new IssueLinkSection(
+        [
+          new IssueLink(
+            12,
+            Resolve.false(),
+            new ResolveWord(),
+            Repository.build('owner/sample'),
+          ),
+        ],
+        new Header('# Related Issue'),
+      ),
       Position.bottom(),
     );
     expect(pullRequestBody.value).toBe(
       `description\n\n# Related Issue\n\n- owner/sample#12`,
+    );
+  });
+  describe('Header option', () => {
+    const pullRequestBody = new PullRequestBody('description');
+    pullRequestBody.addRelatedIssueSection(
+      new IssueLinkSection(
+        [
+          new IssueLink(
+            12,
+            Resolve.false(),
+            new ResolveWord(),
+            Repository.build('owner/sample'),
+          ),
+        ],
+        new Header('## Issue Number'),
+      ),
+      Position.bottom(),
+    );
+    expect(pullRequestBody.value).toBe(
+      `description\n\n## Issue Number\n\n- owner/sample#12`,
     );
   });
 });

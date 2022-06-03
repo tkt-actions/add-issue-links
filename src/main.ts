@@ -11,6 +11,7 @@ import { PullRequestRecordCoordinator } from './application/coordinator/PullRequ
 import { PullRequestQueryService } from './application/service/PullRequestQueryService';
 import { LinkStyle } from './domain/linkStyle/LinkStyle';
 import { ResolveWord } from './domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
+import { Header } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/header/Header';
 
 async function run(): Promise<void> {
   try {
@@ -18,6 +19,7 @@ async function run(): Promise<void> {
       token: core.getInput('repo-token', { required: true }),
       branchPrefix: core.getInput('branch-prefix', { required: false }),
       position: core.getInput('position', { required: false }),
+      header: core.getInput('header', { required: false }),
       resolve: core.getInput('resolve', { required: false }),
       resolveWord: core.getInput('resolve-word', { required: false }),
       repository: core.getInput('repository', { required: false }),
@@ -41,6 +43,9 @@ async function run(): Promise<void> {
       context,
       issueNumber,
       Position.build(withInput.position) ?? Position.bottom(),
+      withInput.header
+        ? new Header(withInput.header)
+        : new Header('# Related Issue'),
       Resolve.buildFromString(withInput.resolve) ?? Resolve.false(),
       withInput.resolveWord
         ? new ResolveWord(withInput.resolveWord)
