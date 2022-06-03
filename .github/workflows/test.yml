@@ -13,4 +13,4 @@ jobs:
     - name: npm install, build, lint and test
       run: |
         npm install
-        npm run all
+        npm run check

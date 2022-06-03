@@ -7,21 +7,28 @@
     "build": "tsc",
     "format": "prettier --write \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
     "format:check": "prettier --check \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
-    "lint": "eslint \"{src,apps,libs,test}/**/{*.spec.ts,*.ts,*.tsx,*.js,*.jsx}\"",
-    "lint:fix": "eslint \"{src,apps,libs,test}/**/{*.ts,*.tsx,*.js,*.jsx}\" --fix",
+    "lint": "run-s lint:*",
+    "lint:eslint": "eslint \"{src,apps,libs,test}/**/{*.spec.ts,*.ts,*.tsx,*.js,*.jsx}\"",
+    "lint:format": "prettier --check \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
+    "lint:tsc": "tsc --noEmit",
+    "fix": "run-s fix:*",
+    "fix:eslint": "eslint \"{src,apps,libs,test}/**/{*.ts,*.tsx,*.js,*.jsx}\" --fix",
+    "fix:format": "prettier --write \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "pack": "ncc build -m",
-    "all": "npm run format && npm run lint && npm test && npm run build && npm run pack",
-    "pre-commit": "all"
+    "check": "run-s lint test",
+    "check-build": "run-s check build",
+    "exec": "run-s build exec:node",
+    "exec:node": "node dist/index.js",
+    "pre-commit": "run-s check"
   },
   "author": "tktcorporation",
   "license": "MIT",
   "husky": {
     "hooks": {
-      "pre-commit": "npm test",
-      "pre-push": "npm run all"
+      "pre-commit": "npm run lint-fix",
+      "pre-push": "npm run check"
     }
   },
   "dependencies": {
@@ -40,6 +47,7 @@
     "eslint-plugin-jest": "^24.4.2",
     "husky": "^7.0.2",
     "jest": "^27.2.2",
+    "npm-run-all2": "^5.0.2",
     "prettier": "^2.4.1",
     "ts-jest": "^27.0.5",
     "typescript": "^4.4.3"
