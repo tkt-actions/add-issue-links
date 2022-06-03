@@ -11,7 +11,7 @@ import { PullRequestRecordCoordinator } from './application/coordinator/PullRequ
 import { PullRequestQueryService } from './application/service/PullRequestQueryService';
 import { LinkStyle } from './domain/linkStyle/LinkStyle';
 import { ResolveWord } from './domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
-import { Header } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/header/Header';
+import { Header } from './domain/pullRequest/pullRequestBody/issueLinkSection/header/Header';
 
 async function run(): Promise<void> {
   try {
