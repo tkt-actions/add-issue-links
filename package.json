@@ -4,7 +4,7 @@
   "description": "A GitHub Action for adding an issue reference to a pull request.",
   "main": "lib/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && ncc build -m",
     "format": "prettier --write \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
     "format:check": "prettier --check \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
     "lint": "run-s lint:*",
@@ -17,11 +17,13 @@
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
+    "all": "run-s fix lint test",
     "check": "run-s lint test",
     "check-build": "run-s check build",
     "exec": "run-s build exec:node",
     "exec:node": "node dist/index.js",
-    "pre-commit": "run-s check"
+    "pre-commit": "run-s check",
+    "pre-push": "run-s check build"
   },
   "author": "tktcorporation",
   "license": "MIT",
