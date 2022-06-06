@@ -1,0 +1,11 @@
+{
+    "runOnSave.commands": [
+        {
+            "globMatch": "**/*",
+            "command": "docker-compose exec -T app /bin/bash -c \"npm run fix:format\"",
+            "runIn": "backend",
+            "runningStatusMessage": "dum fix",
+            "finishStatusMessage": "dum fix completed"
+        }
+    ]
+}
