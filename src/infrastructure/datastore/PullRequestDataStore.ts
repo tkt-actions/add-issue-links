@@ -1,3 +1,4 @@
+import * as core from '@actions/core';
 import { GitHub } from '@actions/github/lib/utils';
 import { PullRequest } from '../../domain/pullRequest/PullRequest';
 import { PullRequestRepository } from './../../application/repository/PullRequestRepository';
@@ -15,13 +16,16 @@ export class PullRequestDataStore implements PullRequestRepository {
     pullRequest: PullRequest,
   ): Promise<
     ReturnType<InstanceType<typeof GitHub>['rest']['pulls']['update']>
-  > =>
-    this.client.update({
+  > => {
+    core.debug(`pullRequest.body.value: ${pullRequest.body.value}`);
+    return this.client.update({
       body: pullRequest.body.value,
       pull_number: pullRequest.number,
       owner: pullRequest.owner,
       repo: pullRequest.repo,
     });
+  };
+
   get = async (number: number, owner: string, repo: string) => {
     const data = (
       await this.client.get({
