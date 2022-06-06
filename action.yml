@@ -13,6 +13,10 @@ inputs:
     description: '`top` or `bottom`. A position name of inserting issue link section. Default: `bottom`'
     required: false
     default: 'bottom'
+  header:
+    description: 'A header of issue link section. Default: `# Related issue`'
+    required: false
+    default: '# Related issue'
   resolve:
     description: '`true` or `false`. `true` to add "Resolve" prefix to an issue link. "Resolve" prefix close an related issue when the branch is merged. Default: `true`'
     required: false

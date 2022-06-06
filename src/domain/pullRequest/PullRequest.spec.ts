@@ -6,6 +6,7 @@ import { Resolve } from '../resolve/Resolve';
 import { IssueLinkSection } from './pullRequestBody/issueLinkSection/IssueLinkSection';
 import { Repository } from '../repository/Repository';
 import { ResolveWord } from './pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
+import { Header } from './pullRequestBody/issueLinkSection/header/Header';
 
 describe('PullRequest', () => {
   describe('bottom', () => {
@@ -18,14 +19,17 @@ describe('PullRequest', () => {
         'pr-action',
       );
       pr.body.addRelatedIssueSection(
-        new IssueLinkSection([
-          new IssueLink(
-            12,
-            Resolve.true(),
-            new ResolveWord(),
-            Repository.build('owner/sample'),
-          ),
-        ]),
+        new IssueLinkSection(
+          [
+            new IssueLink(
+              12,
+              Resolve.true(),
+              new ResolveWord(),
+              Repository.build('owner/sample'),
+            ),
+          ],
+          new Header('# Related Issue'),
+        ),
         Position.bottom(),
       );
       expect(pr.body.value).toBe(
@@ -41,14 +45,17 @@ describe('PullRequest', () => {
         'pr-action',
       );
       pr.body.addRelatedIssueSection(
-        new IssueLinkSection([
-          new IssueLink(
-            12,
-            Resolve.true(),
-            new ResolveWord('fixed'),
-            Repository.build('owner/sample'),
-          ),
-        ]),
+        new IssueLinkSection(
+          [
+            new IssueLink(
+              12,
+              Resolve.true(),
+              new ResolveWord('fixed'),
+              Repository.build('owner/sample'),
+            ),
+          ],
+          new Header('# Related Issue'),
+        ),
         Position.bottom(),
       );
       expect(pr.body.value).toBe(`# Related Issue\n\n- fixed owner/sample#12`);
@@ -62,14 +69,17 @@ describe('PullRequest', () => {
         'pr-action',
       );
       pr.body.addRelatedIssueSection(
-        new IssueLinkSection([
-          new IssueLink(
-            12,
-            Resolve.true(),
-            new ResolveWord(''),
-            Repository.build('owner/sample'),
-          ),
-        ]),
+        new IssueLinkSection(
+          [
+            new IssueLink(
+              12,
+              Resolve.true(),
+              new ResolveWord(''),
+              Repository.build('owner/sample'),
+            ),
+          ],
+          new Header('# Related Issue'),
+        ),
         Position.bottom(),
       );
       expect(pr.body.value).toBe(`# Related Issue\n\n-  owner/sample#12`);
@@ -85,14 +95,17 @@ describe('PullRequest', () => {
         'pr-action',
       );
       pr.body.addRelatedIssueSection(
-        new IssueLinkSection([
-          new IssueLink(
-            12,
-            Resolve.true(),
-            new ResolveWord(undefined),
-            Repository.build('owner/sample'),
-          ),
-        ]),
+        new IssueLinkSection(
+          [
+            new IssueLink(
+              12,
+              Resolve.true(),
+              new ResolveWord(undefined),
+              Repository.build('owner/sample'),
+            ),
+          ],
+          new Header('# Related Issue'),
+        ),
         Position.top(),
       );
       expect(pr.body.value).toBe(
@@ -108,14 +121,17 @@ describe('PullRequest', () => {
         'pr-action',
       );
       pr.body.addRelatedIssueSection(
-        new IssueLinkSection([
-          new IssueLink(
-            12,
-            Resolve.true(),
-            new ResolveWord('release:'),
-            Repository.build('owner/sample'),
-          ),
-        ]),
+        new IssueLinkSection(
+          [
+            new IssueLink(
+              12,
+              Resolve.true(),
+              new ResolveWord('release:'),
+              Repository.build('owner/sample'),
+            ),
+          ],
+          new Header('# Related Issue'),
+        ),
         Position.top(),
       );
       expect(pr.body.value).toBe(
@@ -131,14 +147,17 @@ describe('PullRequest', () => {
         'pr-action',
       );
       pr.body.addRelatedIssueSection(
-        new IssueLinkSection([
-          new IssueLink(
-            12,
-            Resolve.true(),
-            new ResolveWord(),
-            Repository.build('owner/sample'),
-          ),
-        ]),
+        new IssueLinkSection(
+          [
+            new IssueLink(
+              12,
+              Resolve.true(),
+              new ResolveWord(),
+              Repository.build('owner/sample'),
+            ),
+          ],
+          new Header('# Related Issue'),
+        ),
         Position.top(),
       );
       expect(pr.body.value).toBe(
