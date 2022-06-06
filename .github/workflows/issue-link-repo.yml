@@ -13,7 +13,7 @@ jobs:
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           branch-prefix: 'issue-'
-          position: 'top'
           header: '## header text'
           resolve: 'true'
           repository: 'tktcorporation/tktcorporation'
+          link-style: "comment"
