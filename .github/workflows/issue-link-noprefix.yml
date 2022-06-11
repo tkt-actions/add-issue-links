@@ -1,4 +1,4 @@
-name: "Issue Link Comment (with resolve-word)"
+name: 'Issue Link Comment (with resolve-word)'
 on:
   pull_request:
     types: [opened]
@@ -11,8 +11,8 @@ jobs:
       - name: issue link comment
         uses: ./
         with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          branch-prefix: ""
-          resolve: "true"
-          resolve-word: "release:"
-          link-style: "comment"
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          branch-prefix: '^'
+          resolve: 'true'
+          resolve-word: 'release:'
+          link-style: 'comment'
