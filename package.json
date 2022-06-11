@@ -37,7 +37,7 @@
     "@actions/core": "1.5.0",
     "@actions/github": "5.0.0",
     "reflect-metadata": "0.1.13",
-    "tsyringe": "4.6.0"
+    "tsyringe": "4.7.0"
   },
   "devDependencies": {
     "@types/jest": "27.0.2",
