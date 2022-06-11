@@ -23,9 +23,19 @@ describe('Branch', () => {
     it('the branch name has no prefix', () => {
       const branchName = '12/feature/action';
       const branch = new Branch(branchName);
-      const branchNamePrefix = '';
+      const branchNamePrefix = '^';
       const issueNumber = branch.getIssueNumber(branchNamePrefix);
       expect(issueNumber).toBe(12);
+    });
+
+    it("a issue number shouldn't be found", () => {
+      const branchName = 'feature/123';
+      const branch = new Branch(branchName);
+      const branchNamePrefix = '^';
+      // expect the function to throw an error
+      expect(() => branch.getIssueNumber(branchNamePrefix)).toThrow(
+        BranchIssueNumNotFound,
+      );
     });
   });
 });
