@@ -4,7 +4,7 @@
   "description": "A GitHub Action for adding an issue reference to a pull request.",
   "main": "lib/main.js",
   "scripts": {
-    "build": "tsc && ncc build -m",
+    "build": "tsc && ncc build -m -s --license LICENSE",
     "format": "prettier --write \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
     "format:check": "prettier --check \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
     "lint": "run-s lint:*",
