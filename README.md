@@ -46,7 +46,7 @@ Need to contain the required parameters on the workflow file.
 
 ### Set up optional parameters
 
-- `branch-prefix` - A prefix of a branch name for finding a related issue.  
+- `branch-prefix` - A prefix of a branch name for finding a related issue. The regex can be used.
   (Default: "issue-")
 - `position` - Change position of link text section.  
   (allow "top" or "bottom". Default: "bottom")
