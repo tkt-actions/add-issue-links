@@ -48,7 +48,7 @@ jobs:
 
 
       - name: Commit & Push
-        if: ${{ steps.diff.outputs.diff && github.pull_request.author != 'dependabot' }}
+        if: ${{ steps.diff.outputs.diff && github.actor != 'dependabot[bot]' }}
         run: |
           set -x
           git config user.name github-actions[bot]
