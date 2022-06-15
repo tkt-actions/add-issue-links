@@ -1,6 +1,13 @@
 name: Test, Build and Push
 on:
-  push
+  push:
+    branches:
+      - master
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   test:
@@ -23,6 +30,7 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: write
+      pull-requests: write
     
     steps:
       - run: cat $GITHUB_EVENT_PATH
@@ -39,11 +47,24 @@ jobs:
       - name: Check diff
         id: diff
         run: |
+          set -x
           git add -N .
-          git diff --name-only --exit-code
-        continue-on-error: true
+          git_diff=$(git diff --name-only)
+          files="${git_diff//$'\n'/, }"
+          echo "::set-output name=diff::$files"
+
+      - name: Comment on PullRequest
+        uses: thollander/actions-comment-pull-request@v1
+        if: ${{ steps.diff.outputs.diff && github.event_name == 'pull_request' }}
+        with:
+          message: |
+            When the build result on the PR was checked, the following files were changed:
+            ${{ steps.diff.outputs.diff }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Commit & Push
+        if: ${{ steps.diff.outputs.diff && github.ref == 'refs/heads/master' }}
         run: |
           set -x
           git config user.name github-actions[bot]
@@ -51,4 +72,3 @@ jobs:
           git add .
           git commit --author=. -m 'bot: build'
           git push
-        if: steps.diff.outcome == 'failure'
