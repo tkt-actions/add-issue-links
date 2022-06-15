@@ -1,6 +1,13 @@
 name: Test, Build and Push
 on:
-  push
+  push:
+    branches:
+      - master
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   test:
