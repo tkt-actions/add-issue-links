@@ -61,7 +61,7 @@ async function run(): Promise<void> {
     if (error instanceof BranchIssueNumNotFound)
       return core.info(`BranchIssueNumNotFound: ${error.message}`);
     if (error instanceof Error) return core.setFailed(error);
-    return core.setFailed('uncaught error occurred');
+    return core.setFailed('An uncaught error occurred');
   }
 }
 
