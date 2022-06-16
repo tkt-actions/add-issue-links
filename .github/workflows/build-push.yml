@@ -56,3 +56,13 @@ jobs:
           git add .
           git commit --author=. -m 'bot: build'
           git push
+
+  auto-merge:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ahmadnassri/action-dependabot-auto-merge@v2
+        with:
+          target: patch
+          github-token: ${{ secrets.GITHUB_TOKEN }}
