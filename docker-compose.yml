@@ -2,7 +2,7 @@ version: "3.7"
 services:
   app:
     command: /bin/bash -c "while true; do echo 'hello world'; sleep 1000; done"
-    build: .
+    image: node:16.15.0-bullseye-slim
     working_dir: /app
     volumes:
       - .:/app
