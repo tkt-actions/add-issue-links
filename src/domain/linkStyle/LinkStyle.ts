@@ -2,7 +2,7 @@ const LinkStyleValue = {
   Body: 'body',
   Comment: 'comment',
 } as const;
-type LinkStyleValue = typeof LinkStyleValue[keyof typeof LinkStyleValue];
+type LinkStyleValue = (typeof LinkStyleValue)[keyof typeof LinkStyleValue];
 
 const isLinkStyleValue = (value: string): value is LinkStyleValue =>
   typeof value === 'string' &&
