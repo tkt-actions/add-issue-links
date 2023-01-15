@@ -82,6 +82,8 @@ on:
 jobs:
   issue-links:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: tkt-actions/add-issue-links@v1.8.1
         with:
@@ -105,6 +107,8 @@ on:
 jobs:
   issue-links:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: tkt-actions/add-issue-links@v1.8.1
         with:
