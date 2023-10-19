@@ -6,8 +6,10 @@ on:
 jobs:
   issue-link:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Add issue links with link-style option
         uses: ./
         with:

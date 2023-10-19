@@ -2,7 +2,7 @@ const PositionValue = {
   Top: 'top',
   Bottom: 'bottom',
 } as const;
-type PositionValue = typeof PositionValue[keyof typeof PositionValue];
+type PositionValue = (typeof PositionValue)[keyof typeof PositionValue];
 
 const isPositionValue = (value: string): value is PositionValue =>
   typeof value === 'string' &&
