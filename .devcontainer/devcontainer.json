@@ -1,21 +1,23 @@
 {
   "name": "add-issue-links",
-  "image": "mcr.microsoft.com/devcontainers/universal:linux",
 
-  // Add the IDs of extensions you want installed when the container is created.
-  "extensions": [
-    "ms-azuretools.vscode-docker",
-    "GitHub.copilot",
-    "donjayamanne.githistory",
-    "mhutchie.git-graph",
-    "steoates.autoimport",
-    "Atishay-Jain.All-Autocomplete",
-    "usernamehw.errorlens",
-    "dbaeumer.vscode-eslint",
-    "wix.vscode-import-cost",
-    "pflannery.vscode-versionlens",
-    "editorconfig.editorconfig"
-  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "GitHub.copilot",
+        "donjayamanne.githistory",
+        "mhutchie.git-graph",
+        "steoates.autoimport",
+        "Atishay-Jain.All-Autocomplete",
+        "usernamehw.errorlens",
+        "dbaeumer.vscode-eslint",
+        "wix.vscode-import-cost",
+        "pflannery.vscode-versionlens",
+        "editorconfig.editorconfig"
+      ]
+    }
+  },
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
