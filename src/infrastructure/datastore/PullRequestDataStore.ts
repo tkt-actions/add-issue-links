@@ -4,13 +4,23 @@ import { PullRequestRepository } from './../../application/repository/PullReques
 import { PullRequestBody } from './../../domain/pullRequest/pullRequestBody/PullRequestBody';
 import { IssueLinkSection } from './../../domain/pullRequest/pullRequestBody/issueLinkSection/IssueLinkSection';
 
+/**
+ * プルリクエストのデータストア
+ * GitHub APIを使用してプルリクエストの操作を行います
+ */
 export class PullRequestDataStore implements PullRequestRepository {
   private readonly client: InstanceType<typeof GitHub>['rest']['pulls'];
   private readonly issuesClient: InstanceType<typeof GitHub>['rest']['issues'];
+
   constructor(client: InstanceType<typeof GitHub>) {
     this.client = client.rest.pulls;
     this.issuesClient = client.rest.issues;
   }
+
+  /**
+   * プルリクエストを更新します
+   * @param pullRequest - 更新するプルリクエスト
+   */
   update = async (
     pullRequest: PullRequest,
   ): Promise<
@@ -22,6 +32,13 @@ export class PullRequestDataStore implements PullRequestRepository {
       owner: pullRequest.owner,
       repo: pullRequest.repo,
     });
+
+  /**
+   * プルリクエストを取得します
+   * @param number - プルリクエスト番号
+   * @param owner - リポジトリオーナー
+   * @param repo - リポジトリ名
+   */
   get = async (number: number, owner: string, repo: string) => {
     const data = (
       await this.client.get({
@@ -38,6 +55,12 @@ export class PullRequestDataStore implements PullRequestRepository {
       repo,
     );
   };
+
+  /**
+   * プルリクエストにコメントを作成します
+   * @param pullRequest - プルリクエスト
+   * @param issueLinkSection - イシューリンクセクション
+   */
   createComment = async (
     pullRequest: PullRequest,
     issueLinkSection: IssueLinkSection,
@@ -47,6 +70,25 @@ export class PullRequestDataStore implements PullRequestRepository {
       repo: pullRequest.repo,
       owner: pullRequest.owner,
       issue_number: pullRequest.number,
+    });
+  };
+
+  /**
+   * イシューにユーザーをアサインします
+   * @param pullRequest - プルリクエスト
+   * @param issueNumber - イシュー番号
+   * @param assignee - アサインするユーザー名
+   */
+  assignIssueToUser = async (
+    pullRequest: PullRequest,
+    issueNumber: number,
+    assignee: string,
+  ): Promise<void> => {
+    await this.issuesClient.addAssignees({
+      repo: pullRequest.repo,
+      owner: pullRequest.owner,
+      issue_number: issueNumber,
+      assignees: [assignee],
     });
   };
 }
