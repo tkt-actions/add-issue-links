@@ -33,6 +33,7 @@ jobs:
     # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
     permissions:
       pull-requests: write
+      issues: write # required for auto-assign feature
     steps:
       - uses: tkt-actions/add-issue-links@v1.8.1
         with:
@@ -66,6 +67,8 @@ Need to contain the required parameters on the workflow file.
 - `link-style` - `body` add an issue link by editing Pull Request body.  
   `comment` add an issue link by creating comment to Pull Request.  
   (allow "body or "comment". Default: "body")
+- `assign-pr-creator-to-issue` - Automatically assign the pull request creator to the related issue.  
+  (allow "true" or "false". Default: "false")
 
 #### Body edit example
 
@@ -84,6 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      issues: write # required for auto-assign feature
     steps:
       - uses: tkt-actions/add-issue-links@v1.8.1
         with:
@@ -92,11 +96,12 @@ jobs:
           repository: 'tkt-actions/add-issue-links'
 ```
 
-#### Comment link example
+#### Comment link example with PR creator assignment
 
 - Add an issue link as a comment
 - Resolve issue when a pull request is merged.
 - Use branch prefix `issue-`. A branch name example `feature/issue-10/update`.
+- Automatically assign the pull request creator to the related issue.
 
 ```yml
 name: 'Issue Links'
@@ -109,6 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      issues: write # required for auto-assign feature
     steps:
       - uses: tkt-actions/add-issue-links@v1.8.1
         with:
@@ -116,6 +122,7 @@ jobs:
           branch-prefix: 'issue-' # required
           resolve: 'true' # optional (default: "false")
           link-style: 'comment' # optional (default: "body")
+          assign-pr-creator-to-issue: 'true' # optional (default: "false")
 ```
 
 #### Other examples
