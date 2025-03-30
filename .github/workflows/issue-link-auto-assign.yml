@@ -1,0 +1,22 @@
+name: 'Issue Link with PR Creator Assignment'
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  issue-link-with-pr-creator-assignment:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add issue links and assign PR creator to issue
+        uses: ./
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          branch-prefix: 'issue-'
+          position: 'top'
+          resolve: 'true'
+          link-style: 'body'
+          assign-pr-creator-to-issue: 'true'
