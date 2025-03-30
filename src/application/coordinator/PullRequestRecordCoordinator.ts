@@ -9,6 +9,7 @@ import { Position } from 'src/domain/position/Position';
 import { ResolveWord } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
 import { Header } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/header/Header';
 import { AssignIssueToPullRequestCreator } from '../../domain/assign/AssignIssueToPullRequestCreator';
+import * as core from '@actions/core';
 
 /**
  * プルリクエストの記録をコーディネートするクラス
@@ -108,10 +109,22 @@ export class PullRequestRecordCoordinator {
     assign: AssignIssueToPullRequestCreator,
   ): Promise<void> => {
     const pullRequest = await this.queryService.findOne(context);
+    // PRの作成者情報を取得
+    const prCreator = context.payload.pull_request?.user?.login;
+    core.debug(`PR作成者情報: ${prCreator}`);
+
+    if (!prCreator) {
+      core.warning(
+        'PR作成者情報が取得できませんでした。アサイン処理をスキップします。',
+      );
+      return;
+    }
+
     await this.assignIssueToPullRequestCreatorByPullRequest(
       pullRequest,
       issueNumber,
       assign,
+      prCreator,
     );
   };
 
@@ -120,17 +133,19 @@ export class PullRequestRecordCoordinator {
    * @param pullRequest - プルリクエスト
    * @param issueNumber - イシュー番号
    * @param assign - アサイン設定
+   * @param creator - プルリクエスト作成者
    */
   assignIssueToPullRequestCreatorByPullRequest = async (
     pullRequest: PullRequest,
     issueNumber: number,
     assign: AssignIssueToPullRequestCreator,
+    creator: string,
   ): Promise<void> => {
     await this.recordService.assignIssueToPullRequestCreator(
       pullRequest,
       issueNumber,
       assign,
-      pullRequest.owner,
+      creator,
     );
   };
 }
