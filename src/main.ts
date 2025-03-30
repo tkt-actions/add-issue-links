@@ -12,6 +12,7 @@ import { PullRequestQueryService } from './application/service/PullRequestQueryS
 import { LinkStyle } from './domain/linkStyle/LinkStyle';
 import { ResolveWord } from './domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
 import { Header } from './domain/pullRequest/pullRequestBody/issueLinkSection/header/Header';
+import { AssignIssueToPullRequestCreator } from './domain/assign/AssignIssueToPullRequestCreator';
 
 async function run(): Promise<void> {
   try {
@@ -24,6 +25,7 @@ async function run(): Promise<void> {
       resolveWord: core.getInput('resolve-word', { required: false }),
       repository: core.getInput('repository', { required: false }),
       linkStyle: core.getInput('link-style', { required: false }),
+      assignPrCreatorToIssue: core.getInput('assign-pr-creator-to-issue', { required: false }),
     };
 
     core.debug(Object.values(withInput).toString());
@@ -32,14 +34,16 @@ async function run(): Promise<void> {
       .getBranch()
       .getIssueNumber(withInput.branchPrefix);
 
-    new PullRequestRecordCoordinator(
+    const coordinator = new PullRequestRecordCoordinator(
       new PullRequestRecordService(
         new PullRequestDataStore(getOctokit(withInput.token)),
       ),
       new PullRequestQueryService(
         new PullRequestDataStore(getOctokit(withInput.token)),
       ),
-    ).addIssueLink(
+    );
+
+    coordinator.addIssueLink(
       context,
       issueNumber,
       Position.build(withInput.position) ?? Position.bottom(),
@@ -54,9 +58,23 @@ async function run(): Promise<void> {
       LinkStyle.build(withInput.linkStyle) ?? LinkStyle.body(),
     );
 
+    // 作成者のアサイン機能を呼び出し
+    coordinator.assignIssueToPullRequestCreator(
+      context,
+      issueNumber,
+      AssignIssueToPullRequestCreator.buildFromString(withInput.assignPrCreatorToIssue) ??
+        AssignIssueToPullRequestCreator.false(),
+    );
+
     core.info(
       `Added issue #${issueNumber} reference to pull request ${withInput.repository}#${issueNumber}.`,
     );
+
+    if (AssignIssueToPullRequestCreator.buildFromString(withInput.assignPrCreatorToIssue)?.isTrue) {
+      core.info(
+        `Assigned the pull request creator to issue #${issueNumber}.`,
+      );
+    }
   } catch (error) {
     if (error instanceof BranchIssueNumNotFound)
       return core.info(`BranchIssueNumNotFound: ${error.message}`);
