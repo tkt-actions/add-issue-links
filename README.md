@@ -4,7 +4,7 @@ A GitHub Action for [Linking a pull request to an issue](https://help.github.com
 
 ## :arrow_forward: Usage
 
-This action add a comment or add texts into a body of Pull Request like this when it is opened.
+This action adds a comment or adds text into the body of a Pull Request like this when it is opened.
 
 ```md
 # Related Issue
@@ -43,10 +43,10 @@ jobs:
 
 ### Set up required parameters
 
-Need to contain the required parameters on the workflow file.
+The workflow file needs to contain the required parameters.
 
 - `repo-token` - A token of the repository.  
-  It can pass with `{{ secrets.GITHUB_TOKEN }}`
+  It can be passed with `${{ secrets.GITHUB_TOKEN }}`
 
 ### Set up optional parameters
 
@@ -58,15 +58,15 @@ Need to contain the required parameters on the workflow file.
   (Default: "# Related Issue")
 - `resolve` - Add "Resolve" prefix to close a related issue when the branch is merged.  
   (allow "true" or "false". Default: "false")
-- `resolve-word` - Set a prefix for resolving an issue to some specified.
+- `resolve-word` - Set a prefix for resolving an issue to something specific.
   This works when the `resolve` option is enabled.
   (Default: "Resolve")
 - `repository` - Change a base repository related to an issue.  
-  If you use this option, "resolve" option become false.  
+  If you use this option, the "resolve" option becomes false.  
   (e.g. `tkt-actions/issue-links`)
-- `link-style` - `body` add an issue link by editing Pull Request body.  
-  `comment` add an issue link by creating comment to Pull Request.  
-  (allow "body or "comment". Default: "body")
+- `link-style` - `body` adds an issue link by editing Pull Request body.  
+  `comment` adds an issue link by creating a comment on the Pull Request.  
+  (allow "body" or "comment". Default: "body")
 - `assign-pr-creator-to-issue` - Automatically assign the pull request creator to the related issue.  
   (allow "true" or "false". Default: "false")
 
@@ -129,14 +129,14 @@ jobs:
 
 - https://github.com/tkt-actions/add-issue-links/tree/master/.github/workflows
 
-### Add a section contained a link of related issue to a pull request
+### Add a section containing a link of related issue to a pull request
 
-Create a branch based on the pattern of the branch name (`[branch prefix][issue number][you can put any texts]`) set up on `.github/workflows/issue-reference.yml`.
+Create a branch based on the pattern of the branch name (`[branch prefix][issue number][you can put any texts]`) set up in `.github/workflows/issue-reference.yml`.
 
 For example, if `branch-prefix` is `issue-`, create a branch like `issue-8/create-action`.
 
 When pushing your changes to the repository and creating a pull request, a workflow runs automatically.
 
-## :memo: Licence
+## :memo: License
 
 MIT
