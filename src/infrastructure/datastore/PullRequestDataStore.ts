@@ -84,11 +84,21 @@ export class PullRequestDataStore implements PullRequestRepository {
     issueNumber: number,
     assignee: string,
   ): Promise<void> => {
-    await this.issuesClient.addAssignees({
-      repo: pullRequest.repo,
-      owner: pullRequest.owner,
-      issue_number: issueNumber,
-      assignees: [assignee],
-    });
+    try {
+      console.log(`Assigning user ${assignee} to issue #${issueNumber} in ${pullRequest.owner}/${pullRequest.repo}`);
+      await this.issuesClient.addAssignees({
+        repo: pullRequest.repo,
+        owner: pullRequest.owner,
+        issue_number: issueNumber,
+        assignees: [assignee],
+      });
+      console.log(`Successfully assigned user ${assignee} to issue #${issueNumber}`);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error(`Failed to assign user to issue: ${errorMessage}`);
+      console.error(`Issue: #${issueNumber}, Owner: ${pullRequest.owner}, Repo: ${pullRequest.repo}, Assignee: ${assignee}`);
+      // エラーはここでハンドリングするだけで上位に伝播させないようにする
+      // アサイン機能は付加的な機能なので、失敗しても全体の処理を中断させない
+    }
   };
 }
