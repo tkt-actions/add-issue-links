@@ -62,7 +62,9 @@ describe('PullRequestRecordService', () => {
             expect.objectContaining({
               issueNumber,
               resolve: expect.objectContaining({ _value: resolve.isTrue }),
-              resolveWord: expect.objectContaining({ value: resolveWord.value }),
+              resolveWord: expect.objectContaining({
+                value: resolveWord.value,
+              }),
               repository: undefined,
             }),
           ]),
@@ -92,9 +94,7 @@ describe('PullRequestRecordService', () => {
       );
 
       expect(mockRepository.update).toHaveBeenCalledWith(pullRequest);
-      expect(pullRequest.body.value).toBe(
-        'body\n\n# Related Issue\n\n- #1',
-      );
+      expect(pullRequest.body.value).toBe('body\n\n# Related Issue\n\n- #1');
     });
   });
 

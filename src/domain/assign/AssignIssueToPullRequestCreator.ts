@@ -20,20 +20,24 @@ export class AssignIssueToPullRequestCreator {
    * アサインを有効にするインスタンスを作成します
    * @returns アサインが有効なインスタンス
    */
-  static true = (): AssignIssueToPullRequestCreator => new AssignIssueToPullRequestCreator(true);
+  static true = (): AssignIssueToPullRequestCreator =>
+    new AssignIssueToPullRequestCreator(true);
 
   /**
    * アサインを無効にするインスタンスを作成します
    * @returns アサインが無効なインスタンス
    */
-  static false = (): AssignIssueToPullRequestCreator => new AssignIssueToPullRequestCreator(false);
+  static false = (): AssignIssueToPullRequestCreator =>
+    new AssignIssueToPullRequestCreator(false);
 
   /**
    * 文字列からインスタンスを作成します
    * @param value - 文字列値（'true' または 'false'）
    * @returns 文字列値に対応するインスタンス。値が未定義の場合はundefined
    */
-  static buildFromString(value: string | undefined): AssignIssueToPullRequestCreator | undefined {
+  static buildFromString(
+    value: string | undefined,
+  ): AssignIssueToPullRequestCreator | undefined {
     if (value === undefined) return undefined;
     return value.toLowerCase() === 'true'
       ? AssignIssueToPullRequestCreator.true()

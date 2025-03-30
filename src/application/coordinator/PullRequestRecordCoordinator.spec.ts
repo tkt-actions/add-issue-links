@@ -80,7 +80,9 @@ describe('PullRequestRecordCoordinator', () => {
       );
 
       expect(mockQueryService.findOne).toHaveBeenCalledWith(context);
-      expect(mockRecordService.addRelatedIssueNumberToBody).toHaveBeenCalledWith(
+      expect(
+        mockRecordService.addRelatedIssueNumberToBody,
+      ).toHaveBeenCalledWith(
         pullRequest,
         issueNumber,
         position,
@@ -108,12 +110,9 @@ describe('PullRequestRecordCoordinator', () => {
       );
 
       expect(mockQueryService.findOne).toHaveBeenCalledWith(context);
-      expect(mockRecordService.assignIssueToPullRequestCreator).toHaveBeenCalledWith(
-        pullRequest,
-        issueNumber,
-        assign,
-        'owner',
-      );
+      expect(
+        mockRecordService.assignIssueToPullRequestCreator,
+      ).toHaveBeenCalledWith(pullRequest, issueNumber, assign, 'owner');
     });
   });
 });

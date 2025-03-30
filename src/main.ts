@@ -25,7 +25,9 @@ async function run(): Promise<void> {
       resolveWord: core.getInput('resolve-word', { required: false }),
       repository: core.getInput('repository', { required: false }),
       linkStyle: core.getInput('link-style', { required: false }),
-      assignPrCreatorToIssue: core.getInput('assign-pr-creator-to-issue', { required: false }),
+      assignPrCreatorToIssue: core.getInput('assign-pr-creator-to-issue', {
+        required: false,
+      }),
     };
 
     core.debug(Object.values(withInput).toString());
@@ -62,18 +64,21 @@ async function run(): Promise<void> {
     coordinator.assignIssueToPullRequestCreator(
       context,
       issueNumber,
-      AssignIssueToPullRequestCreator.buildFromString(withInput.assignPrCreatorToIssue) ??
-        AssignIssueToPullRequestCreator.false(),
+      AssignIssueToPullRequestCreator.buildFromString(
+        withInput.assignPrCreatorToIssue,
+      ) ?? AssignIssueToPullRequestCreator.false(),
     );
 
     core.info(
       `Added issue #${issueNumber} reference to pull request ${withInput.repository}#${issueNumber}.`,
     );
 
-    if (AssignIssueToPullRequestCreator.buildFromString(withInput.assignPrCreatorToIssue)?.isTrue) {
-      core.info(
-        `Assigned the pull request creator to issue #${issueNumber}.`,
-      );
+    if (
+      AssignIssueToPullRequestCreator.buildFromString(
+        withInput.assignPrCreatorToIssue,
+      )?.isTrue
+    ) {
+      core.info(`Assigned the pull request creator to issue #${issueNumber}.`);
     }
   } catch (error) {
     if (error instanceof BranchIssueNumNotFound)
