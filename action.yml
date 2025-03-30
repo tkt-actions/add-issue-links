@@ -32,6 +32,10 @@ inputs:
     description: '`body` or `comment`. `body` add an issue link by editing Pull Request body. `comment` add an issue link by creating comment to Pull Request. Default: `body`'
     required: false
     default: 'body'
+  assign-pr-creator-to-issue:
+    description: '`true` or `false`. `true` to automatically assign the pull request creator to the related issue. Default: `false`'
+    required: false
+    default: 'false'
 runs:
   using: 'node16'
   main: 'dist/index.js'
