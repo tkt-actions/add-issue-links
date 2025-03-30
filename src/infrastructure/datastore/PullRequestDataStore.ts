@@ -88,10 +88,29 @@ export class PullRequestDataStore implements PullRequestRepository {
       console.log(
         `Assigning user ${assignee} to issue #${issueNumber} in ${pullRequest.owner}/${pullRequest.repo}`,
       );
+
+      // デバッグ情報を追加
+      console.log('API呼び出し情報:');
+      console.log({
+        endpoint: 'issues.addAssignees',
+        params: {
+          repo: pullRequest.repo,
+          owner: pullRequest.owner,
+          issue_number: issueNumber, // PRの番号ではなく、issueNumberを使用していることを明確化
+          assignees: [assignee],
+        },
+      });
+
+      // GitHub API呼び出し前にHTTPリクエスト詳細をログ出力
+      console.log(
+        `GitHub API URL: https://api.github.com/repos/${pullRequest.owner}/${pullRequest.repo}/issues/${issueNumber}/assignees`,
+      );
+      console.log(`GitHub User Agent: @actions/github`);
+
       await this.issuesClient.addAssignees({
         repo: pullRequest.repo,
         owner: pullRequest.owner,
-        issue_number: issueNumber,
+        issue_number: issueNumber, // PRの番号ではなく、issueNumberを使用する
         assignees: [assignee],
       });
       console.log(
@@ -101,11 +120,34 @@ export class PullRequestDataStore implements PullRequestRepository {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
       console.error(`Failed to assign user to issue: ${errorMessage}`);
+
+      // エラーオブジェクトの詳細情報を出力
+      if (error instanceof Error) {
+        console.error('エラー詳細:');
+        console.error(`名前: ${error.name}`);
+        console.error(`メッセージ: ${error.message}`);
+        console.error(`スタック: ${error.stack}`);
+
+        // レスポンスの情報がある場合は出力
+        const anyError = error as any;
+        if (anyError.response) {
+          console.error('APIレスポンス情報:');
+          console.error(`ステータス: ${anyError.response.status}`);
+          console.error(`ステータステキスト: ${anyError.response.statusText}`);
+          console.error(
+            `データ: ${JSON.stringify(anyError.response.data, null, 2)}`,
+          );
+          console.error(
+            `ヘッダー: ${JSON.stringify(anyError.response.headers, null, 2)}`,
+          );
+        }
+      }
+
+      // リポジトリやイシュー番号をより明確に出力
       console.error(
         `Issue: #${issueNumber}, Owner: ${pullRequest.owner}, Repo: ${pullRequest.repo}, Assignee: ${assignee}`,
       );
-      // エラーはここでハンドリングするだけで上位に伝播させないようにする
-      // アサイン機能は付加的な機能なので、失敗しても全体の処理を中断させない
+      throw error;
     }
   };
 }

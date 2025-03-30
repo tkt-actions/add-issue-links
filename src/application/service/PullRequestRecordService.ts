@@ -8,6 +8,7 @@ import { PullRequest } from './../../domain/pullRequest/PullRequest';
 import { ResolveWord } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
 import { Header } from 'src/domain/pullRequest/pullRequestBody/issueLinkSection/header/Header';
 import { AssignIssueToPullRequestCreator } from '../../domain/assign/AssignIssueToPullRequestCreator';
+import * as core from '@actions/core';
 
 /**
  * プルリクエストの記録サービス
@@ -83,12 +84,37 @@ export class PullRequestRecordService {
     assign: AssignIssueToPullRequestCreator,
     creator: string,
   ): Promise<void> => {
+    core.debug(
+      `アサイン処理開始: イシュー #${issueNumber}, 作成者: ${creator}`,
+    );
+    core.debug(
+      `PR情報: owner=${pullRequest.owner}, repo=${pullRequest.repo}, number=${pullRequest.number}`,
+    );
+    core.debug(`アサイン設定: ${assign.isTrue ? '有効' : '無効'}`);
+
     if (assign.isTrue) {
-      await this.pullRequestRepository.assignIssueToUser(
-        pullRequest,
-        issueNumber,
-        creator,
+      core.debug(
+        `アサイン処理実行: ユーザー ${creator} をイシュー #${issueNumber} にアサイン`,
       );
+      try {
+        await this.pullRequestRepository.assignIssueToUser(
+          pullRequest,
+          issueNumber,
+          creator,
+        );
+        core.debug(
+          `アサイン処理成功: ユーザー ${creator} をイシュー #${issueNumber} にアサイン完了`,
+        );
+      } catch (error) {
+        core.debug(
+          `アサイン処理失敗: ${
+            error instanceof Error ? error.message : '不明なエラー'
+          }`,
+        );
+        throw error;
+      }
+    } else {
+      core.debug('アサイン設定が無効のためスキップ');
     }
   };
 }
