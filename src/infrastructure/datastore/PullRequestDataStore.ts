@@ -4,13 +4,23 @@ import { PullRequestRepository } from './../../application/repository/PullReques
 import { PullRequestBody } from './../../domain/pullRequest/pullRequestBody/PullRequestBody';
 import { IssueLinkSection } from './../../domain/pullRequest/pullRequestBody/issueLinkSection/IssueLinkSection';
 
+/**
+ * プルリクエストのデータストア
+ * GitHub APIを使用してプルリクエストの操作を行います
+ */
 export class PullRequestDataStore implements PullRequestRepository {
   private readonly client: InstanceType<typeof GitHub>['rest']['pulls'];
   private readonly issuesClient: InstanceType<typeof GitHub>['rest']['issues'];
+
   constructor(client: InstanceType<typeof GitHub>) {
     this.client = client.rest.pulls;
     this.issuesClient = client.rest.issues;
   }
+
+  /**
+   * プルリクエストを更新します
+   * @param pullRequest - 更新するプルリクエスト
+   */
   update = async (
     pullRequest: PullRequest,
   ): Promise<
@@ -22,6 +32,13 @@ export class PullRequestDataStore implements PullRequestRepository {
       owner: pullRequest.owner,
       repo: pullRequest.repo,
     });
+
+  /**
+   * プルリクエストを取得します
+   * @param number - プルリクエスト番号
+   * @param owner - リポジトリオーナー
+   * @param repo - リポジトリ名
+   */
   get = async (number: number, owner: string, repo: string) => {
     const data = (
       await this.client.get({
@@ -38,6 +55,12 @@ export class PullRequestDataStore implements PullRequestRepository {
       repo,
     );
   };
+
+  /**
+   * プルリクエストにコメントを作成します
+   * @param pullRequest - プルリクエスト
+   * @param issueLinkSection - イシューリンクセクション
+   */
   createComment = async (
     pullRequest: PullRequest,
     issueLinkSection: IssueLinkSection,
@@ -48,5 +71,83 @@ export class PullRequestDataStore implements PullRequestRepository {
       owner: pullRequest.owner,
       issue_number: pullRequest.number,
     });
+  };
+
+  /**
+   * イシューにユーザーをアサインします
+   * @param pullRequest - プルリクエスト
+   * @param issueNumber - イシュー番号
+   * @param assignee - アサインするユーザー名
+   */
+  assignIssueToUser = async (
+    pullRequest: PullRequest,
+    issueNumber: number,
+    assignee: string,
+  ): Promise<void> => {
+    try {
+      console.log(
+        `Assigning user ${assignee} to issue #${issueNumber} in ${pullRequest.owner}/${pullRequest.repo}`,
+      );
+
+      // デバッグ情報を追加
+      console.log('API呼び出し情報:');
+      console.log({
+        endpoint: 'issues.addAssignees',
+        params: {
+          repo: pullRequest.repo,
+          owner: pullRequest.owner,
+          issue_number: issueNumber, // PRの番号ではなく、issueNumberを使用していることを明確化
+          assignees: [assignee],
+        },
+      });
+
+      // GitHub API呼び出し前にHTTPリクエスト詳細をログ出力
+      console.log(
+        `GitHub API URL: https://api.github.com/repos/${pullRequest.owner}/${pullRequest.repo}/issues/${issueNumber}/assignees`,
+      );
+      console.log(`GitHub User Agent: @actions/github`);
+
+      await this.issuesClient.addAssignees({
+        repo: pullRequest.repo,
+        owner: pullRequest.owner,
+        issue_number: issueNumber, // PRの番号ではなく、issueNumberを使用する
+        assignees: [assignee],
+      });
+      console.log(
+        `Successfully assigned user ${assignee} to issue #${issueNumber}`,
+      );
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      console.error(`Failed to assign user to issue: ${errorMessage}`);
+
+      // エラーオブジェクトの詳細情報を出力
+      if (error instanceof Error) {
+        console.error('エラー詳細:');
+        console.error(`名前: ${error.name}`);
+        console.error(`メッセージ: ${error.message}`);
+        console.error(`スタック: ${error.stack}`);
+
+        // レスポンスの情報がある場合は出力
+        const anyError = error as any;
+        if (anyError.response) {
+          console.error('APIレスポンス情報:');
+          console.error(`ステータス: ${anyError.response.status}`);
+          console.error(`ステータステキスト: ${anyError.response.statusText}`);
+          console.error(
+            `データ: ${JSON.stringify(anyError.response.data, null, 2)}`,
+          );
+          console.error(
+            `ヘッダー: ${JSON.stringify(anyError.response.headers, null, 2)}`,
+          );
+        }
+      }
+
+      // リポジトリやイシュー番号をより明確に出力
+      console.error(
+        `Issue: #${issueNumber}, Owner: ${pullRequest.owner}, Repo: ${pullRequest.repo}, Assignee: ${assignee}`,
+      );
+      throw error;
+    }
   };
 }
