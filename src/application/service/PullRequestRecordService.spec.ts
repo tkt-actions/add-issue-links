@@ -2,22 +2,24 @@ import { PullRequestRecordService } from './PullRequestRecordService';
 import { PullRequestRepository } from '../repository/PullRequestRepository';
 import { PullRequest } from '../../domain/pullRequest/PullRequest';
 import { PullRequestBody } from '../../domain/pullRequest/pullRequestBody/PullRequestBody';
-import { IssueLinkSection } from '../../domain/pullRequest/pullRequestBody/issueLinkSection/IssueLinkSection';
 import { Header } from '../../domain/pullRequest/pullRequestBody/issueLinkSection/header/Header';
-import { IssueLink } from '../../domain/pullRequest/pullRequestBody/issueLinkSection/issueLink/IssueLinkText';
 import { Resolve } from '../../domain/resolve/Resolve';
 import { ResolveWord } from '../../domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
 import { Position } from '../../domain/position/Position';
-import { Repository } from '../../domain/repository/Repository';
 import { AssignIssueToPullRequestCreator } from '../../domain/assign/AssignIssueToPullRequestCreator';
+import * as core from '@actions/core';
+import { Repository } from '../../domain/repository/Repository';
 
 describe('PullRequestRecordService', () => {
-  const mockRepository: PullRequestRepository = {
+  const mockRepository: jest.Mocked<PullRequestRepository> = {
     update: jest.fn(),
     get: jest.fn(),
     createComment: jest.fn(),
     assignIssueToUser: jest.fn(),
+    createPlainTextComment: jest.fn(),
   };
+
+  const otherRepository = new Repository('other-owner', 'other-repo');
 
   const pullRequest = new PullRequest(
     'title',
@@ -47,11 +49,6 @@ describe('PullRequestRecordService', () => {
         resolve,
         resolveWord,
         repository,
-      );
-
-      const expectedIssueLinkSection = new IssueLinkSection(
-        [new IssueLink(issueNumber, resolve, resolveWord, repository)],
-        header,
       );
 
       expect(mockRepository.createComment).toHaveBeenCalledWith(
@@ -99,7 +96,7 @@ describe('PullRequestRecordService', () => {
   });
 
   describe('assignIssueToPullRequestCreator', () => {
-    it('アサインが有効な場合、プルリクエストの作成者をイシューにアサインする', async () => {
+    it('アサインが有効で repository 指定がない場合、PR のリポジトリのイシューにアサインする', async () => {
       const service = new PullRequestRecordService(mockRepository);
       const issueNumber = 1;
       const assign = AssignIssueToPullRequestCreator.true();
@@ -113,7 +110,30 @@ describe('PullRequestRecordService', () => {
       );
 
       expect(mockRepository.assignIssueToUser).toHaveBeenCalledWith(
+        pullRequest.owner,
+        pullRequest.repo,
+        issueNumber,
+        creator,
+      );
+    });
+
+    it('アサインが有効で repository 指定がある場合、指定されたリポジトリのイシューにアサインする', async () => {
+      const service = new PullRequestRecordService(mockRepository);
+      const issueNumber = 1;
+      const assign = AssignIssueToPullRequestCreator.true();
+      const creator = 'username';
+
+      await service.assignIssueToPullRequestCreator(
         pullRequest,
+        issueNumber,
+        assign,
+        creator,
+        otherRepository,
+      );
+
+      expect(mockRepository.assignIssueToUser).toHaveBeenCalledWith(
+        otherRepository.owner,
+        otherRepository.repo,
         issueNumber,
         creator,
       );
@@ -133,6 +153,143 @@ describe('PullRequestRecordService', () => {
       );
 
       expect(mockRepository.assignIssueToUser).not.toHaveBeenCalled();
+      expect(mockRepository.createPlainTextComment).not.toHaveBeenCalled();
+    });
+
+    describe('エラーハンドリング', () => {
+      let warningSpy: jest.SpyInstance;
+      let errorSpy: jest.SpyInstance;
+
+      beforeEach(() => {
+        warningSpy = jest.spyOn(core, 'warning').mockImplementation();
+        errorSpy = jest.spyOn(core, 'error').mockImplementation();
+      });
+
+      afterEach(() => {
+        warningSpy.mockRestore();
+        errorSpy.mockRestore();
+      });
+
+      it('アサイン中にエラーが発生した場合 (repository指定なし)、警告ログと警告コメントを出力し、エラーをスローしない', async () => {
+        const service = new PullRequestRecordService(mockRepository);
+        const issueNumber = 999;
+        const assign = AssignIssueToPullRequestCreator.true();
+        const creator = 'test-user';
+        const assignError = new Error('Issue not found');
+        mockRepository.assignIssueToUser.mockRejectedValueOnce(assignError);
+
+        await expect(
+          service.assignIssueToPullRequestCreator(
+            pullRequest,
+            issueNumber,
+            assign,
+            creator,
+          ),
+        ).resolves.not.toThrow();
+
+        expect(mockRepository.assignIssueToUser).toHaveBeenCalledWith(
+          pullRequest.owner,
+          pullRequest.repo,
+          issueNumber,
+          creator,
+        );
+        expect(warningSpy).toHaveBeenCalledWith(
+          expect.stringContaining(
+            `Failed to assign issue ${pullRequest.owner}/${pullRequest.repo}#${issueNumber}`,
+          ),
+        );
+        expect(mockRepository.createPlainTextComment).toHaveBeenCalledWith(
+          pullRequest,
+          expect.stringContaining(
+            `⚠ Warning: Issue ${pullRequest.owner}/${pullRequest.repo}#${issueNumber} not found`,
+          ),
+        );
+        expect(errorSpy).not.toHaveBeenCalled();
+      });
+
+      it('アサイン中にエラーが発生した場合 (repository指定あり)、警告ログと警告コメントを出力し、エラーをスローしない', async () => {
+        const service = new PullRequestRecordService(mockRepository);
+        const issueNumber = 999;
+        const assign = AssignIssueToPullRequestCreator.true();
+        const creator = 'test-user';
+        const assignError = new Error('Issue not found');
+        mockRepository.assignIssueToUser.mockRejectedValueOnce(assignError);
+
+        await expect(
+          service.assignIssueToPullRequestCreator(
+            pullRequest,
+            issueNumber,
+            assign,
+            creator,
+            otherRepository,
+          ),
+        ).resolves.not.toThrow();
+
+        expect(mockRepository.assignIssueToUser).toHaveBeenCalledWith(
+          otherRepository.owner,
+          otherRepository.repo,
+          issueNumber,
+          creator,
+        );
+        expect(warningSpy).toHaveBeenCalledWith(
+          expect.stringContaining(
+            `Failed to assign issue ${otherRepository.owner}/${otherRepository.repo}#${issueNumber}`,
+          ),
+        );
+        expect(mockRepository.createPlainTextComment).toHaveBeenCalledWith(
+          pullRequest,
+          expect.stringContaining(
+            `⚠ Warning: Issue ${otherRepository.owner}/${otherRepository.repo}#${issueNumber} not found`,
+          ),
+        );
+        expect(errorSpy).not.toHaveBeenCalled();
+      });
+
+      it('アサイン中およびコメント投稿中にエラーが発生した場合、警告とエラーログを出力し、エラーをスローしない', async () => {
+        const service = new PullRequestRecordService(mockRepository);
+        const issueNumber = 999;
+        const assign = AssignIssueToPullRequestCreator.true();
+        const creator = 'test-user';
+        const assignError = new Error('Issue not found');
+        const commentError = new Error('Failed to post comment');
+        mockRepository.assignIssueToUser.mockRejectedValueOnce(assignError);
+        mockRepository.createPlainTextComment.mockRejectedValueOnce(
+          commentError,
+        );
+
+        await expect(
+          service.assignIssueToPullRequestCreator(
+            pullRequest,
+            issueNumber,
+            assign,
+            creator,
+            otherRepository,
+          ),
+        ).resolves.not.toThrow();
+
+        expect(mockRepository.assignIssueToUser).toHaveBeenCalledWith(
+          otherRepository.owner,
+          otherRepository.repo,
+          issueNumber,
+          creator,
+        );
+        expect(warningSpy).toHaveBeenCalledWith(
+          expect.stringContaining(
+            `Failed to assign issue ${otherRepository.owner}/${otherRepository.repo}#${issueNumber}`,
+          ),
+        );
+        expect(mockRepository.createPlainTextComment).toHaveBeenCalledWith(
+          pullRequest,
+          expect.stringContaining(
+            `⚠ Warning: Issue ${otherRepository.owner}/${otherRepository.repo}#${issueNumber} not found`,
+          ),
+        );
+        expect(errorSpy).toHaveBeenCalledWith(
+          expect.stringContaining(
+            `Failed to post warning comment to PR #${pullRequest.number}. Error: ${commentError.message}`,
+          ),
+        );
+      });
     });
   });
 });

@@ -74,19 +74,43 @@ export class PullRequestDataStore implements PullRequestRepository {
   };
 
   /**
-   * イシューにユーザーをアサインします
+   * プルリクエストにプレーンテキストのコメントを作成します
    * @param pullRequest - プルリクエスト
+   * @param body - コメント本文
+   */
+  createPlainTextComment = async (
+    pullRequest: PullRequest,
+    body: string,
+  ): Promise<void> => {
+    if (!body) {
+      console.log('コメント本文が空のため、コメント作成をスキップします。');
+      return;
+    }
+
+    await this.issuesClient.createComment({
+      owner: pullRequest.owner,
+      repo: pullRequest.repo,
+      issue_number: pullRequest.number, // PRの番号を使用
+      body: body, // 受け取った本文をそのまま使用
+    });
+  };
+
+  /**
+   * イシューにユーザーをアサインします
+   * @param owner - リポジトリオーナー
+   * @param repo - リポジトリ名
    * @param issueNumber - イシュー番号
    * @param assignee - アサインするユーザー名
    */
   assignIssueToUser = async (
-    pullRequest: PullRequest,
+    owner: string,
+    repo: string,
     issueNumber: number,
     assignee: string,
   ): Promise<void> => {
     try {
       console.log(
-        `Assigning user ${assignee} to issue #${issueNumber} in ${pullRequest.owner}/${pullRequest.repo}`,
+        `Assigning user ${assignee} to issue #${issueNumber} in ${owner}/${repo}`,
       );
 
       // デバッグ情報を追加
@@ -94,23 +118,23 @@ export class PullRequestDataStore implements PullRequestRepository {
       console.log({
         endpoint: 'issues.addAssignees',
         params: {
-          repo: pullRequest.repo,
-          owner: pullRequest.owner,
-          issue_number: issueNumber, // PRの番号ではなく、issueNumberを使用していることを明確化
+          repo: repo,
+          owner: owner,
+          issue_number: issueNumber,
           assignees: [assignee],
         },
       });
 
       // GitHub API呼び出し前にHTTPリクエスト詳細をログ出力
       console.log(
-        `GitHub API URL: https://api.github.com/repos/${pullRequest.owner}/${pullRequest.repo}/issues/${issueNumber}/assignees`,
+        `GitHub API URL: https://api.github.com/repos/${owner}/${repo}/issues/${issueNumber}/assignees`,
       );
       console.log(`GitHub User Agent: @actions/github`);
 
       await this.issuesClient.addAssignees({
-        repo: pullRequest.repo,
-        owner: pullRequest.owner,
-        issue_number: issueNumber, // PRの番号ではなく、issueNumberを使用する
+        repo: repo,
+        owner: owner,
+        issue_number: issueNumber,
         assignees: [assignee],
       });
       console.log(
@@ -145,7 +169,7 @@ export class PullRequestDataStore implements PullRequestRepository {
 
       // リポジトリやイシュー番号をより明確に出力
       console.error(
-        `Issue: #${issueNumber}, Owner: ${pullRequest.owner}, Repo: ${pullRequest.repo}, Assignee: ${assignee}`,
+        `Issue: #${issueNumber}, Owner: ${owner}, Repo: ${repo}, Assignee: ${assignee}`,
       );
       throw error;
     }

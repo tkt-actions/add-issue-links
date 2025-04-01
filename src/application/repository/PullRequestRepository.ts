@@ -36,13 +36,22 @@ export interface PullRequestRepository {
 
   /**
    * イシューにユーザーをアサインします
-   * @param pullRequest - プルリクエスト
+   * @param owner - リポジトリオーナー
+   * @param repo - リポジトリ名
    * @param issueNumber - イシュー番号
    * @param assignee - アサインするユーザー名
    */
   assignIssueToUser(
-    pullRequest: PullRequest,
+    owner: string,
+    repo: string,
     issueNumber: number,
     assignee: string,
   ): Promise<void>;
+
+  /**
+   * プルリクエストにプレーンテキストのコメントを作成します
+   * @param pullRequest - プルリクエスト
+   * @param body - コメント本文
+   */
+  createPlainTextComment(pullRequest: PullRequest, body: string): Promise<void>;
 }
