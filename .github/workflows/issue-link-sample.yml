@@ -1,0 +1,22 @@
+name: 'Issue Link Sample'
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  issue-link:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Add issue links with link-style option
+        uses: tkt-actions/add-issue-links@v1.9.0
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          branch-prefix: 'issue-'
+          header: '## Issue Link Sample'
+          position: 'top'
+          resolve: 'true'
+          link-style: 'comment'
+          assign-pr-creator-to-issue: 'true'
