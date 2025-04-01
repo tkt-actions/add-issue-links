@@ -72,7 +72,47 @@ export class PullRequestRecordService {
   };
 
   /**
+   * 警告コメントをPRに投稿します
+   * イシューが存在しない場合やアサイン処理が失敗した場合に呼び出されます
+   * このメソッドは失敗してもエラーをスローしないため、メイン処理のフローを中断しません
+   *
+   * @param pullRequest - プルリクエスト
+   * @param issueNumber - イシュー番号
+   * @param creator - プルリクエスト作成者
+   */
+  private postAssignWarningComment = async (
+    pullRequest: PullRequest,
+    issueNumber: number,
+    creator: string,
+  ): Promise<void> => {
+    // 警告メッセージの作成 - ユーザーにイシューが見つからなかったことを明確に伝える
+    const warningMessage = `⚠ Warning: Issue #${issueNumber} not found or assignee could not be set. Assigning the pull request creator (${creator}) failed.`;
+    try {
+      // PRにプレーンテキストのコメントとして警告を投稿
+      await this.pullRequestRepository.createPlainTextComment(
+        pullRequest,
+        warningMessage,
+      );
+      core.debug(
+        'イシューが見つからない、またはアサインに失敗したため、警告コメントをPRに追加しました。',
+      );
+    } catch (commentError) {
+      // コメント投稿に失敗した場合でも処理を継続するため、エラーログを出力するだけ
+      const commentErrorMessage =
+        commentError instanceof Error
+          ? commentError.message
+          : 'Unknown comment error';
+      core.error(
+        `Failed to post warning comment to PR #${pullRequest.number}. Error: ${commentErrorMessage}`,
+      );
+      // コメント投稿失敗時もエラーをスローしない - メイン処理の継続を優先
+    }
+  };
+
+  /**
    * プルリクエストの作成者をイシューにアサインします
+   * イシューが存在しない場合でもGitHub Actionの実行を停止せず、警告メッセージをPRにコメントします
+   *
    * @param pullRequest - プルリクエスト
    * @param issueNumber - イシュー番号
    * @param assign - アサイン設定
@@ -97,6 +137,7 @@ export class PullRequestRecordService {
         `アサイン処理実行: ユーザー ${creator} をイシュー #${issueNumber} にアサイン`,
       );
       try {
+        // GitHub APIを呼び出してイシューにユーザーをアサイン
         await this.pullRequestRepository.assignIssueToUser(
           pullRequest,
           issueNumber,
@@ -106,12 +147,20 @@ export class PullRequestRecordService {
           `アサイン処理成功: ユーザー ${creator} をイシュー #${issueNumber} にアサイン完了`,
         );
       } catch (error) {
+        // エラー内容をログに記録
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         core.debug(
-          `アサイン処理失敗: ${
-            error instanceof Error ? error.message : '不明なエラー'
-          }`,
+          `アサイン処理失敗: ${errorMessage}`,
         );
-        throw error;
+
+        // エラーをスローせず、警告コメントを投稿するだけ
+        // イシューが存在しない場合でもGitHub Actionの実行を継続するため
+        core.warning(
+          `Failed to assign issue #${issueNumber} to ${creator}. Error: ${errorMessage}`,
+        );
+
+        // PRにコメントを追加 - ユーザーに問題を通知するため
+        await this.postAssignWarningComment(pullRequest, issueNumber, creator);
       }
     } else {
       core.debug('アサイン設定が無効のためスキップ');

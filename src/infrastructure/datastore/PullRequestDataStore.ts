@@ -74,6 +74,28 @@ export class PullRequestDataStore implements PullRequestRepository {
   };
 
   /**
+   * プルリクエストにプレーンテキストのコメントを作成します
+   * @param pullRequest - プルリクエスト
+   * @param body - コメント本文
+   */
+  createPlainTextComment = async (
+    pullRequest: PullRequest,
+    body: string,
+  ): Promise<void> => {
+    if (!body) {
+      console.log('コメント本文が空のため、コメント作成をスキップします。');
+      return;
+    }
+
+    await this.issuesClient.createComment({
+      owner: pullRequest.owner,
+      repo: pullRequest.repo,
+      issue_number: pullRequest.number, // PRの番号を使用
+      body: body, // 受け取った本文をそのまま使用
+    });
+  };
+
+  /**
    * イシューにユーザーをアサインします
    * @param pullRequest - プルリクエスト
    * @param issueNumber - イシュー番号
