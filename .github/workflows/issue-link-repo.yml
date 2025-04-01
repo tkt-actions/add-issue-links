@@ -17,5 +17,6 @@ jobs:
           branch-prefix: 'issue-'
           header: '## header text'
           resolve: 'true'
-          repository: 'tktcorporation/tktcorporation'
+          repository: 'tktcorporation/not-found'
           link-style: "comment"
+          assign-pr-creator-to-issue: 'true'

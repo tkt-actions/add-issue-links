@@ -11,6 +11,7 @@ import { Position } from '../../domain/position/Position';
 import { LinkStyle } from '../../domain/linkStyle/LinkStyle';
 import { AssignIssueToPullRequestCreator } from '../../domain/assign/AssignIssueToPullRequestCreator';
 import { PullRequestRepository } from '../repository/PullRequestRepository';
+import { Repository } from '../../domain/repository/Repository';
 
 describe('PullRequestRecordCoordinator', () => {
   const mockRepository: PullRequestRepository = {
@@ -28,6 +29,8 @@ describe('PullRequestRecordCoordinator', () => {
 
   const mockQueryService = new PullRequestQueryService(mockRepository);
   jest.spyOn(mockQueryService, 'findOne');
+
+  const otherRepository = new Repository('other-owner', 'other-repo');
 
   const pullRequest = new PullRequest(
     'title',
@@ -117,7 +120,40 @@ describe('PullRequestRecordCoordinator', () => {
       expect(mockQueryService.findOne).toHaveBeenCalledWith(context);
       expect(
         mockRecordService.assignIssueToPullRequestCreator,
-      ).toHaveBeenCalledWith(pullRequest, issueNumber, assign, 'username');
+      ).toHaveBeenCalledWith(
+        pullRequest,
+        issueNumber,
+        assign,
+        'username',
+        undefined,
+      );
+    });
+
+    it('プルリクエストの作成者を指定されたリポジトリのイシューにアサインする', async () => {
+      const coordinator = new PullRequestRecordCoordinator(
+        mockRecordService,
+        mockQueryService,
+      );
+      const issueNumber = 1;
+      const assign = AssignIssueToPullRequestCreator.true();
+
+      await coordinator.assignIssueToPullRequestCreator(
+        context,
+        issueNumber,
+        assign,
+        otherRepository,
+      );
+
+      expect(mockQueryService.findOne).toHaveBeenCalledWith(context);
+      expect(
+        mockRecordService.assignIssueToPullRequestCreator,
+      ).toHaveBeenCalledWith(
+        pullRequest,
+        issueNumber,
+        assign,
+        'username',
+        otherRepository,
+      );
     });
   });
 });

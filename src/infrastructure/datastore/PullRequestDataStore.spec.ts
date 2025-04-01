@@ -102,7 +102,7 @@ describe('PullRequestDataStore', () => {
   describe('assignIssueToUser', () => {
     it('イシューにユーザーをアサインする', async () => {
       const dataStore = new PullRequestDataStore(mockClient as any);
-      await dataStore.assignIssueToUser(pullRequest, 1, 'username');
+      await dataStore.assignIssueToUser('owner', 'repo', 1, 'username');
 
       expect(mockClient.rest.issues.addAssignees).toHaveBeenCalledWith({
         repo: 'repo',

@@ -120,6 +120,7 @@ async function run(): Promise<void> {
       AssignIssueToPullRequestCreator.buildFromString(
         withInput.assignPrCreatorToIssue,
       ) ?? AssignIssueToPullRequestCreator.false(),
+      Repository.build(withInput.repository),
     );
 
     core.info(
