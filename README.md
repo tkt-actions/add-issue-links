@@ -116,7 +116,7 @@ jobs:
       pull-requests: write
       issues: write # required for auto-assign feature
     steps:
-      - uses: tkt-actions/add-issue-links@v1.8.1
+      - uses: tkt-actions/add-issue-links@v1.9.0
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}' # required
           branch-prefix: 'issue-' # required
