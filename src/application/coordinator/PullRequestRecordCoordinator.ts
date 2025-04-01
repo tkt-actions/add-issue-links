@@ -102,11 +102,13 @@ export class PullRequestRecordCoordinator {
    * @param context - GitHub Actionsのコンテキスト
    * @param issueNumber - イシュー番号
    * @param assign - アサイン設定
+   * @param repository - (Optional) アサイン対象リポジトリ
    */
   assignIssueToPullRequestCreator = async (
     context: Context,
     issueNumber: number,
     assign: AssignIssueToPullRequestCreator,
+    repository?: Repository,
   ): Promise<void> => {
     const pullRequest = await this.queryService.findOne(context);
     // PRの作成者情報を取得
@@ -125,6 +127,7 @@ export class PullRequestRecordCoordinator {
       issueNumber,
       assign,
       prCreator,
+      repository,
     );
   };
 
@@ -134,18 +137,21 @@ export class PullRequestRecordCoordinator {
    * @param issueNumber - イシュー番号
    * @param assign - アサイン設定
    * @param creator - プルリクエスト作成者
+   * @param repository - (Optional) アサイン対象リポジトリ
    */
   assignIssueToPullRequestCreatorByPullRequest = async (
     pullRequest: PullRequest,
     issueNumber: number,
     assign: AssignIssueToPullRequestCreator,
     creator: string,
+    repository?: Repository,
   ): Promise<void> => {
     await this.recordService.assignIssueToPullRequestCreator(
       pullRequest,
       issueNumber,
       assign,
       creator,
+      repository,
     );
   };
 }

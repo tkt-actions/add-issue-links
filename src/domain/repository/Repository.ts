@@ -7,6 +7,15 @@ export class Repository {
     return new Repository(fields?.username, fields?.repositoryName);
   };
   constructor(private username: string, private repositoryName: string) {}
+
+  get owner(): string {
+    return this.username;
+  }
+
+  get repo(): string {
+    return this.repositoryName;
+  }
+
   createText = () => this.username + '/' + this.repositoryName;
 
   private static readonly fieldsRegex = /^(.+)\/(.+)$/;
