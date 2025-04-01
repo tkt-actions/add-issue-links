@@ -45,4 +45,11 @@ export interface PullRequestRepository {
     issueNumber: number,
     assignee: string,
   ): Promise<void>;
+
+  /**
+   * プルリクエストにプレーンテキストのコメントを作成します
+   * @param pullRequest - プルリクエスト
+   * @param body - コメント本文
+   */
+  createPlainTextComment(pullRequest: PullRequest, body: string): Promise<void>;
 }

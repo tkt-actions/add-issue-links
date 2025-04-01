@@ -8,8 +8,8 @@ import { IssueLink } from '../../domain/pullRequest/pullRequestBody/issueLinkSec
 import { Resolve } from '../../domain/resolve/Resolve';
 import { ResolveWord } from '../../domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
 import { Position } from '../../domain/position/Position';
-import { Repository } from '../../domain/repository/Repository';
 import { AssignIssueToPullRequestCreator } from '../../domain/assign/AssignIssueToPullRequestCreator';
+import * as core from '@actions/core';
 
 describe('PullRequestRecordService', () => {
   const mockRepository: PullRequestRepository = {
@@ -17,6 +17,7 @@ describe('PullRequestRecordService', () => {
     get: jest.fn(),
     createComment: jest.fn(),
     assignIssueToUser: jest.fn(),
+    createPlainTextComment: jest.fn(),
   };
 
   const pullRequest = new PullRequest(
@@ -133,6 +134,101 @@ describe('PullRequestRecordService', () => {
       );
 
       expect(mockRepository.assignIssueToUser).not.toHaveBeenCalled();
+      expect(mockRepository.createPlainTextComment).not.toHaveBeenCalled();
+    });
+
+    it('アサイン中にエラーが発生した場合、警告ログと警告コメントを出力し、エラーをスローしない', async () => {
+      const service = new PullRequestRecordService(mockRepository);
+      const issueNumber = 999;
+      const assign = AssignIssueToPullRequestCreator.true();
+      const creator = 'test-user';
+      const assignError = new Error('Issue not found');
+
+      (mockRepository.assignIssueToUser as jest.Mock).mockRejectedValueOnce(
+        assignError,
+      );
+
+      const warningSpy = jest.spyOn(core, 'warning');
+      const errorSpy = jest.spyOn(core, 'error');
+
+      await expect(
+        service.assignIssueToPullRequestCreator(
+          pullRequest,
+          issueNumber,
+          assign,
+          creator,
+        ),
+      ).resolves.not.toThrow();
+
+      expect(mockRepository.assignIssueToUser).toHaveBeenCalledWith(
+        pullRequest,
+        issueNumber,
+        creator,
+      );
+      expect(warningSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          `Failed to assign issue #${issueNumber} to ${creator}. Error: ${assignError.message}`,
+        ),
+      );
+      expect(mockRepository.createPlainTextComment).toHaveBeenCalledWith(
+        pullRequest,
+        expect.stringContaining(`⚠ Warning: Issue #${issueNumber} not found`),
+      );
+      expect(errorSpy).not.toHaveBeenCalled();
+
+      warningSpy.mockRestore();
+      errorSpy.mockRestore();
+    });
+
+    it('アサイン中およびコメント投稿中にエラーが発生した場合、警告とエラーログを出力し、エラーをスローしない', async () => {
+      const service = new PullRequestRecordService(mockRepository);
+      const issueNumber = 999;
+      const assign = AssignIssueToPullRequestCreator.true();
+      const creator = 'test-user';
+      const assignError = new Error('Issue not found');
+      const commentError = new Error('Failed to post comment');
+
+      (mockRepository.assignIssueToUser as jest.Mock).mockRejectedValueOnce(
+        assignError,
+      );
+      (
+        mockRepository.createPlainTextComment as jest.Mock
+      ).mockRejectedValueOnce(commentError);
+
+      const warningSpy = jest.spyOn(core, 'warning');
+      const errorSpy = jest.spyOn(core, 'error');
+
+      await expect(
+        service.assignIssueToPullRequestCreator(
+          pullRequest,
+          issueNumber,
+          assign,
+          creator,
+        ),
+      ).resolves.not.toThrow();
+
+      expect(mockRepository.assignIssueToUser).toHaveBeenCalledWith(
+        pullRequest,
+        issueNumber,
+        creator,
+      );
+      expect(warningSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          `Failed to assign issue #${issueNumber} to ${creator}. Error: ${assignError.message}`,
+        ),
+      );
+      expect(mockRepository.createPlainTextComment).toHaveBeenCalledWith(
+        pullRequest,
+        expect.stringContaining(`⚠ Warning: Issue #${issueNumber} not found`),
+      );
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.stringContaining(
+          `Failed to post warning comment to PR #${pullRequest.number}. Error: ${commentError.message}`,
+        ),
+      );
+
+      warningSpy.mockRestore();
+      errorSpy.mockRestore();
     });
   });
 });

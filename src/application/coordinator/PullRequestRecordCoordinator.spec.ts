@@ -4,13 +4,10 @@ import { PullRequestQueryService } from '../service/PullRequestQueryService';
 import { Context } from '@actions/github/lib/context';
 import { PullRequest } from '../../domain/pullRequest/PullRequest';
 import { PullRequestBody } from '../../domain/pullRequest/pullRequestBody/PullRequestBody';
-import { IssueLinkSection } from '../../domain/pullRequest/pullRequestBody/issueLinkSection/IssueLinkSection';
 import { Header } from '../../domain/pullRequest/pullRequestBody/issueLinkSection/header/Header';
-import { IssueLink } from '../../domain/pullRequest/pullRequestBody/issueLinkSection/issueLink/IssueLinkText';
 import { Resolve } from '../../domain/resolve/Resolve';
 import { ResolveWord } from '../../domain/pullRequest/pullRequestBody/issueLinkSection/resolveWord/ResolveWord';
 import { Position } from '../../domain/position/Position';
-import { Repository } from '../../domain/repository/Repository';
 import { LinkStyle } from '../../domain/linkStyle/LinkStyle';
 import { AssignIssueToPullRequestCreator } from '../../domain/assign/AssignIssueToPullRequestCreator';
 import { PullRequestRepository } from '../repository/PullRequestRepository';
@@ -21,6 +18,7 @@ describe('PullRequestRecordCoordinator', () => {
     get: jest.fn(),
     createComment: jest.fn(),
     assignIssueToUser: jest.fn(),
+    createPlainTextComment: jest.fn(),
   };
 
   const mockRecordService = new PullRequestRecordService(mockRepository);
