@@ -11,7 +11,7 @@ jobs:
       issues: write
     steps:
       - name: Add issue links with link-style option
-        uses: tkt-actions/add-issue-links@v1.9.0
+        uses: tkt-actions/add-issue-links@v1.9.1
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           branch-prefix: 'issue-'
