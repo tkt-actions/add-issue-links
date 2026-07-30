@@ -6,7 +6,10 @@ export class Repository {
     if (!fields) return undefined;
     return new Repository(fields?.username, fields?.repositoryName);
   };
-  constructor(private username: string, private repositoryName: string) {}
+  constructor(
+    private username: string,
+    private repositoryName: string,
+  ) {}
 
   get owner(): string {
     return this.username;
