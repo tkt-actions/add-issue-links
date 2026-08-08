@@ -3,9 +3,6 @@
   "version": "1.9.1",
   "description": "A GitHub Action for adding an issue reference to a pull request.",
   "main": "lib/main.js",
-  "engines": {
-    "node": "20.x"
-  },
   "scripts": {
     "build": "tsc && ncc build -m -s --license LICENSE",
     "format": "prettier --write \"{src,test}/**/{*.ts,*.tsx,*.js,*.jsx}\"",
