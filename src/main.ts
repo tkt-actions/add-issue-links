@@ -97,7 +97,7 @@ async function run(): Promise<void> {
       Position.build(withInput.position) ?? Position.bottom(),
       withInput.header
         ? new Header(withInput.header)
-        : new Header('# Related Issue'),
+        : new Header('# Related issue'),
       Resolve.buildFromString(withInput.resolve) ?? Resolve.false(),
       withInput.resolveWord
         ? new ResolveWord(withInput.resolveWord)
