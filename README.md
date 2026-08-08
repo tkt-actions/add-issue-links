@@ -137,6 +137,12 @@ For example, if `branch-prefix` is `issue-`, create a branch like `issue-8/creat
 
 When pushing your changes to the repository and creating a pull request, a workflow runs automatically.
 
+## :handshake: Contributing
+
+This project uses [Changesets](https://github.com/changesets/changesets) to manage releases. If you're opening a PR, see [CONTRIBUTING.md](./CONTRIBUTING.md) for the branch model, how to add a changeset, and how the release process works.
+
+> Note: a moving `@v1` major tag will become available starting with the next release after `v1.9.1`, alongside pinned versions like `@v1.9.0` shown above.
+
 ## :memo: License
 
 MIT
