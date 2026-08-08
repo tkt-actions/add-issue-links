@@ -1,0 +1,173 @@
+name: Release
+
+on:
+  push:
+    branches: [next]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Opens/updates the "chore(release): version packages" PR when there are
+      # unreleased changesets, or does nothing if none remain.
+      - name: Create release pull request
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: npm run changeset:version
+          commit: 'chore(release): version packages'
+          title: 'chore(release): version packages'
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}
+
+      # Determine whether the version currently on disk (i.e. just merged by
+      # the release PR) has already been tagged/released.
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          set -euo pipefail
+
+          version="$(node -p "require('./package.json').version")"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+          if git rev-parse -q --verify "refs/tags/v${version}" >/dev/null; then
+            echo "should_release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # From here on, only run when the release PR was just merged
+      # (no unreleased changesets remain) and this version has not been
+      # tagged yet. This keeps the job idempotent for unrelated pushes to
+      # `next` and safe to re-run.
+      - name: Configure git user
+        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Build
+        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
+        run: npm run build
+
+      - name: Commit built dist/
+        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
+        run: |
+          set -euo pipefail
+
+          if [[ -n "$(git status --porcelain dist)" ]]; then
+            git add dist
+            git commit -m 'chore(release): build dist'
+            git push origin HEAD:next
+          else
+            echo "dist/ is already up to date, nothing to commit."
+          fi
+
+      - name: Create and push release tags
+        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          major="${VERSION%%.*}"
+          rest="${VERSION#*.}"
+          minor="${rest%%.*}"
+
+          # Exact version tag: must be created fresh, must not already exist.
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+          git push origin "refs/tags/v${VERSION}"
+
+          # Moving major/minor alias tags, force-updated to this release.
+          git tag -f -a "v${major}" -m "Release v${VERSION}"
+          git tag -f -a "v${major}.${minor}" -m "Release v${VERSION}"
+          git push --force origin "refs/tags/v${major}" "refs/tags/v${major}.${minor}"
+
+      - name: Extract release notes from CHANGELOG.md
+        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          notes_file="${RUNNER_TEMP}/release-notes.md"
+
+          # Extract the body of the "## <version>" section for this release.
+          # Stops at the next "## " heading, or at a standalone "---" rule
+          # (CHANGELOG.md's static footer below the Changesets-managed
+          # section uses one; changesets/changelog-github itself never
+          # emits a bare "---" line, so this is a safe terminator).
+          awk -v ver="$VERSION" '
+            BEGIN {
+              found = 0
+              ver_esc = ver
+              gsub(/\./, "\\.", ver_esc)
+            }
+            /^## / {
+              if (found) exit
+              if ($0 ~ ("^## \\[?v?" ver_esc "\\]?( |$)")) found = 1
+              next
+            }
+            found && /^---[[:space:]]*$/ { exit }
+            found { print }
+          ' CHANGELOG.md > "$notes_file" || true
+
+          # Trim leading/trailing blank lines.
+          sed -i -e '/./,$!d' "$notes_file"
+          tac "$notes_file" | sed -e '/./,$!d' | tac > "${notes_file}.trimmed"
+          mv "${notes_file}.trimmed" "$notes_file"
+
+      - name: Create GitHub Release
+        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          notes_file="${RUNNER_TEMP}/release-notes.md"
+
+          if [[ -s "$notes_file" ]]; then
+            gh release create "v${VERSION}" \
+              --title "v${VERSION}" \
+              --notes-file "$notes_file"
+          else
+            gh release create "v${VERSION}" \
+              --title "v${VERSION}" \
+              --generate-notes
+          fi
+
+      # `master` is a legacy "latest release" pointer branch kept only for
+      # backwards compatibility with existing `@master` consumers. It is not
+      # used for development; every feature PR targets `next`. We force-push
+      # the just-released commit so `@master` always resolves to the latest
+      # release.
+      - name: Sync legacy master branch
+        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
+        run: |
+          set -euo pipefail
+          git push --force origin HEAD:master

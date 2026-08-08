@@ -1,0 +1,147 @@
+name: Changeset Check
+
+on:
+  pull_request:
+    branches: [next]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  changeset-check:
+    name: Changeset Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Compute the PR's changed-file list once and reuse it for both the
+      # release-irrelevant-paths skip check and the changeset-file check.
+      - name: Compute changed files
+        id: diff
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          set -euo pipefail
+
+          git fetch --no-tags origin "+refs/heads/${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+
+          git diff --name-only "origin/${BASE_REF}...HEAD" > "${RUNNER_TEMP}/changed-files.txt"
+
+          git diff --name-only --diff-filter=A "origin/${BASE_REF}...HEAD" -- '.changeset/*.md' \
+            > "${RUNNER_TEMP}/changeset-files-raw.txt"
+          grep -v '^\.changeset/README\.md$' "${RUNNER_TEMP}/changeset-files-raw.txt" \
+            > "${RUNNER_TEMP}/changeset-files.txt" || true
+
+      - name: Decide whether to skip
+        id: skip
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: |
+          set -euo pipefail
+
+          skip=false
+
+          if [[ "$HEAD_REF" == changeset-release/* ]]; then
+            echo "Head branch \`$HEAD_REF\` is the automated release branch; skipping." >> "$GITHUB_STEP_SUMMARY"
+            skip=true
+          fi
+
+          if [[ "$PR_AUTHOR" == "dependabot[bot]" || "$PR_AUTHOR" == "github-actions[bot]" ]]; then
+            echo "PR author \`$PR_AUTHOR\` is exempt from the changeset check." >> "$GITHUB_STEP_SUMMARY"
+            skip=true
+          fi
+
+          if echo "$PR_LABELS" | jq -e 'index("skip-changeset") != null' > /dev/null; then
+            echo "PR carries the \`skip-changeset\` label; skipping." >> "$GITHUB_STEP_SUMMARY"
+            skip=true
+          fi
+
+          # Release-irrelevant paths: if every changed file falls inside this
+          # allowlist, no shipped behaviour can have changed, so no changeset
+          # is required. Anything not matched here (src/**, dist/**,
+          # action.yml, package.json, package-lock.json, ...) still requires
+          # one. Patterns are matched with bash's `case`, whose glob `*`
+          # already matches across "/" (it is plain string pattern matching,
+          # not filesystem pathname expansion), so a single `*` segment is
+          # enough to cover a `**` style pattern.
+          is_release_irrelevant() {
+            case "$1" in
+              .github/*|.changeset/*|.husky/*|.vscode/*|.devcontainer/*|.cursor/*|readmeImages/*)
+                return 0 ;;
+              *.md)
+                return 0 ;;
+              .editorconfig|.prettierrc|.prettierignore|.gitmessages|.gitignore)
+                return 0 ;;
+              docker-compose.yml|eslint.config.js|jest.config.js|tsconfig.json)
+                return 0 ;;
+              *)
+                return 1 ;;
+            esac
+          }
+
+          all_irrelevant=true
+          changed_count=0
+          while IFS= read -r f; do
+            [[ -z "$f" ]] && continue
+            changed_count=$((changed_count + 1))
+            if ! is_release_irrelevant "$f"; then
+              all_irrelevant=false
+              break
+            fi
+          done < "${RUNNER_TEMP}/changed-files.txt"
+
+          if [[ "$changed_count" -gt 0 && "$all_irrelevant" == "true" ]]; then
+            {
+              echo "This PR only touches release-irrelevant paths (docs, CI config, editor/tooling config, etc.) — no shipped code changed, so no changeset is required:"
+              echo
+              while IFS= read -r f; do
+                [[ -z "$f" ]] && continue
+                echo "- \`$f\`"
+              done < "${RUNNER_TEMP}/changed-files.txt"
+            } >> "$GITHUB_STEP_SUMMARY"
+            skip=true
+          fi
+
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
+
+      - name: Check for a changeset
+        if: steps.skip.outputs.skip == 'false'
+        run: |
+          set -euo pipefail
+
+          changesets="$(sed '/^$/d' "${RUNNER_TEMP}/changeset-files.txt")"
+
+          if [[ -z "$changesets" ]]; then
+            {
+              echo "### :x: No changeset found"
+              echo
+              echo "This PR does not add a changeset. Every PR that changes the behaviour of this action needs one so a release note and version bump can be generated."
+              echo
+              echo "To fix this:"
+              echo
+              echo '1. Run `npx changeset` (or `npm run changeset`) locally.'
+              echo "2. Follow the prompts and pick a bump type (patch / minor / major)."
+              echo "3. Commit the generated \`.changeset/*.md\` file and push."
+              echo
+              echo "If this change genuinely needs no release (docs, CI, refactor with no behaviour change), a maintainer can apply the \`skip-changeset\` label instead."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "No changeset found in this PR." >&2
+            exit 1
+          fi
+
+          {
+            echo "### :white_check_mark: Changeset found"
+            echo
+            echo "This PR includes the following changeset file(s):"
+            echo
+            while IFS= read -r f; do
+              echo "- \`$f\`"
+            done <<< "$changesets"
+          } >> "$GITHUB_STEP_SUMMARY"
