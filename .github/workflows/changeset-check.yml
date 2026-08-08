@@ -42,9 +42,17 @@ jobs:
         env:
           HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+
+          # Read the labels from the API rather than from
+          # `github.event.pull_request.labels`. Re-running a job replays the
+          # *original* event payload, so a `skip-changeset` label applied
+          # after a first failing run would never be visible to a re-run and
+          # the check could never be turned green without a new commit.
+          PR_LABELS="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq '[.labels[].name]')"
 
           skip=false
 
