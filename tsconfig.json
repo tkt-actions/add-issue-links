@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "moduleResolution": "node10",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -10,11 +11,15 @@
     "noImplicitAny": true,
     "esModuleInterop": true,
     "strictNullChecks": true,
+    "skipLibCheck": true,
+    "types": ["node", "jest"],
     "target": "es2019",
     "sourceMap": true,
     "outDir": "./lib",
+    "rootDir": "./src",
     "baseUrl": "./",
-    "incremental": true
+    "incremental": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": [
     "src/**/*"
