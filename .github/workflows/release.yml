@@ -65,10 +65,7 @@ jobs:
       # `next` and safe to re-run.
       - name: Configure git user
         if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        uses: ./.github/actions/git-bot-identity
 
       - name: Build
         if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
