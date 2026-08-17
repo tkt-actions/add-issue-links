@@ -47,15 +47,14 @@ npm run changeset
 ## リリースフロー
 
 1. changeset を含む PR が `master` にマージされます。
-2. `master` への push をトリガーに [changesets/action](https://github.com/changesets/action) が動作し、未リリースの changeset があれば `chore(release): version packages` という Pull Request を自動的に作成・更新します。この PR には `package.json` のバージョン更新、`CHANGELOG.md` の更新、`.changeset/*.md` の削除が含まれます。
+2. `master` への push をトリガーに [changesets/action](https://github.com/changesets/action) が動作し、未リリースの changeset があれば `chore(release): version packages` という Pull Request を自動的に作成・更新します。この PR には `package.json` のバージョン更新、`CHANGELOG.md` の更新、`.changeset/*.md` の削除に加えて、**`npm run build` による `dist/` の再ビルド**が含まれます（`changeset:version` スクリプトが `changeset version && npm run build` を実行するため）。差分が出ればそのまま同じコミットに含まれるので、この PR をマージした時点で `dist/` は常に最新の状態になっています。
 3. この自動生成 PR をレビューし、`master` にマージします。
 4. マージにより再度リリースワークフローが実行され、以下が自動的に行われます。
-   - `npm run build` を実行し、更新された `dist/` を `master` にコミット
    - `vX.Y.Z` タグの作成
    - `vX`・`vX.Y` の移動タグ（moving tag）の更新
    - GitHub Release の作成（`CHANGELOG.md` の該当バージョンのセクションをリリースノートとして使用）
 
-上記のうちステップ 4 は、未リリースの changeset が残っておらず、かつそのバージョンのタグがまだ存在しない場合にのみ実行されます。そのため、無関係な push でリリースが誤って走ることはありません。
+上記のうちステップ 4 は、未リリースの changeset が残っておらず、かつそのバージョンのタグがまだ存在しない場合にのみ実行されます。そのため、無関係な push でリリースが誤って走ることはありません。また、このステップは `master` に対して（タグ以外の）直接 push を一切行わないため、`master` のブランチ保護ルール（PR 経由のみ許可）と衝突しません。
 
 ## メンテナー向けセットアップ
 
@@ -64,4 +63,4 @@ npm run changeset
 - 注意: `GITHUB_TOKEN` によって作成された Pull Request（自動生成される `chore(release): version packages` PR）は、既定では他のワークフローをトリガーしません。そのため `Changeset Check` はこの自動リリース PR 上では実行されず、required status check に設定していると、この PR がいつまでも green にならず自動マージできない状態になります。対処法は次のいずれかです。
   - 管理者権限（admin merge）でこの PR をマージする。
   - リポジトリに `RELEASE_PAT`（`contents: write` / `pull-requests: write` などの権限を持つ Personal Access Token）を Secret として追加する。ワークフローは `secrets.RELEASE_PAT || secrets.GITHUB_TOKEN` を使うようにすでに実装されているため、Secret を追加するだけで自動的に有効になり、ワークフロー側の変更は不要です。
-- リリースジョブは `master` に直接 `dist/` の再ビルドコミットを push します（force-push ではなく通常の fast-forward push）。`master` のブランチ保護ルールが「PR 経由のみ許可」になっていると、この push も拒否されるため、`github-actions`（もしくは `RELEASE_PAT` に紐づくアクター）をブランチ保護の bypass 対象に含めておいてください。
+- リリースジョブは `master` ブランチ自体には（タグ以外）一切 push しないため、`master` のブランチ保護ルールに bypass 設定を追加する必要はありません。`dist/` の鮮度は、リリース PR 作成時に `changeset:version` が実行する `npm run build` によって PR マージ前に担保されています。
