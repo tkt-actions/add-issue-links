@@ -23,7 +23,7 @@
     "exec": "run-s build exec:node",
     "exec:node": "node dist/index.js",
     "changeset": "changeset",
-    "changeset:status": "changeset status --since=origin/master",
+    "changeset:status": "changeset status --since=origin/main",
     "changeset:version": "changeset version && npm run build",
     "prepare": "husky"
   },

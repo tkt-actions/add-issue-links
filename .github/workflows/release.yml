@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -62,13 +62,13 @@ jobs:
       # From here on, only run when the release PR was just merged
       # (no unreleased changesets remain) and this version has not been
       # tagged yet. This keeps the job idempotent for unrelated pushes to
-      # `master` and safe to re-run.
+      # `main` and safe to re-run.
       #
       # dist/ is not rebuilt here. changesets/action's `version` command
       # (npm run changeset:version, above) already runs `npm run build` and
       # commits any diff as part of the release PR itself, so by the time
       # that PR is merged, HEAD's dist/ is already fresh -- merging a PR
-      # normally satisfies branch protection, so no direct push to `master`
+      # normally satisfies branch protection, so no direct push to `main`
       # is needed to keep it that way.
       - name: Configure git user
         if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
