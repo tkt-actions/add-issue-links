@@ -127,7 +127,7 @@ jobs:
 
 #### Other examples
 
-- https://github.com/tkt-actions/add-issue-links/tree/master/.github/workflows
+- https://github.com/tkt-actions/add-issue-links/tree/main/.github/workflows
 
 ### Add a section containing a link of related issue to a pull request
 

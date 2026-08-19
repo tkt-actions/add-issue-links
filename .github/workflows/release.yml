@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [next]
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -62,27 +62,17 @@ jobs:
       # From here on, only run when the release PR was just merged
       # (no unreleased changesets remain) and this version has not been
       # tagged yet. This keeps the job idempotent for unrelated pushes to
-      # `next` and safe to re-run.
+      # `main` and safe to re-run.
+      #
+      # dist/ is not rebuilt here. changesets/action's `version` command
+      # (npm run changeset:version, above) already runs `npm run build` and
+      # commits any diff as part of the release PR itself, so by the time
+      # that PR is merged, HEAD's dist/ is already fresh -- merging a PR
+      # normally satisfies branch protection, so no direct push to `main`
+      # is needed to keep it that way.
       - name: Configure git user
         if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
         uses: ./.github/actions/git-bot-identity
-
-      - name: Build
-        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
-        run: npm run build
-
-      - name: Commit built dist/
-        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
-        run: |
-          set -euo pipefail
-
-          if [[ -n "$(git status --porcelain dist)" ]]; then
-            git add dist
-            git commit -m 'chore(release): build dist'
-            git push origin HEAD:next
-          else
-            echo "dist/ is already up to date, nothing to commit."
-          fi
 
       - name: Create and push release tags
         if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
@@ -157,14 +147,3 @@ jobs:
               --title "v${VERSION}" \
               --generate-notes
           fi
-
-      # `master` is a legacy "latest release" pointer branch kept only for
-      # backwards compatibility with existing `@master` consumers. It is not
-      # used for development; every feature PR targets `next`. We force-push
-      # the just-released commit so `@master` always resolves to the latest
-      # release.
-      - name: Sync legacy master branch
-        if: steps.changesets.outputs.hasChangesets == 'false' && steps.meta.outputs.should_release == 'true'
-        run: |
-          set -euo pipefail
-          git push --force origin HEAD:master
