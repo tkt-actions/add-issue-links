@@ -1,5 +1,17 @@
 # add-issue-links
 
+## 1.9.3
+
+### Patch Changes
+
+- [#730](https://github.com/tkt-actions/add-issue-links/pull/730) [`623d2e7`](https://github.com/tkt-actions/add-issue-links/commit/623d2e700119103317230ec70de4de49ec8b7647) Thanks [@tktcorporation](https://github.com/tktcorporation)! - Update devDependencies (`@changesets/cli`, `@changesets/changelog-github`, `npm-run-all2`, `@vercel/ncc`, `globals`, `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser`, `typescript-eslint`) to their latest versions, including the `@changesets/cli`@3 and `@changesets/changelog-github`@1 majors (now Node ^22.11 || ^24 || >=26 only, matching this action's Node 24 runtime) and the `npm-run-all2`@9 major (now that the action targets Node 24, satisfying its `^24.15.0` requirement).
+
+  Skipped major bumps that would break the toolchain: `@actions/core`@3 and `@actions/github`@9 are now ESM-only and incompatible with this project's CommonJS build; `typescript`@7 falls outside `typescript-eslint`'s supported peer range (`>=4.8.4 <6.1.0`); `@types/node` stays on the latest 24.x release to match the Node 24 runtime rather than jumping to the 26.x major.
+
+- [#732](https://github.com/tkt-actions/add-issue-links/pull/732) [`2412909`](https://github.com/tkt-actions/add-issue-links/commit/241290955daac9aa3b9d2f1ca2b78773e8433964) Thanks [@tktcorporation](https://github.com/tktcorporation)! - Update devDependencies (`@changesets/cli`, `eslint`, `typescript-eslint`, `@typescript-eslint/eslint-plugin`, `@typescript-eslint/parser`) to their latest compatible versions.
+
+  Skipped major bumps that would break the toolchain: `@actions/core`@3 and `@actions/github`@9 are now ESM-only and incompatible with this project's CommonJS build; `typescript`@7 falls outside `ts-jest`'s supported peer range (`>=4.3 <7`); `@types/node` stays on the latest 24.x release to match the Node 24 runtime rather than jumping to the 26.x major.
+
 ## 1.9.2
 
 ### Patch Changes
